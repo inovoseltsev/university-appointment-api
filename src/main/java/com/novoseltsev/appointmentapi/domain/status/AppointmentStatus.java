@@ -4,5 +4,5 @@ public enum AppointmentStatus {
     APPROVED,
     DECLINED,
     PENDING,
-    COMPLETED
+    FINISHED
 }
