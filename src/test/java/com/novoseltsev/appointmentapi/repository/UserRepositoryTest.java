@@ -12,7 +12,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -36,12 +38,36 @@ class UserRepositoryTest {
 
     @Test
     void findByLogin() {
-        entityManager.persistAndFlush(initialUser);
+        User expectedUser = entityManager.persistAndFlush(initialUser);
+        String existedLogin = initialUser.getLogin();
+        String notExistedLogin = "notExist";
 
+        User foundUser = userRepository.findByLogin(existedLogin).orElse(null);
+
+        assertNotNull(foundUser);
+        assertEquals(expectedUser, foundUser);
+
+        User notFoundUser =
+                userRepository.findByLogin(notExistedLogin).orElse(null);
+
+        assertNull(notFoundUser);
     }
 
     @Test
     void findByEmail() {
-        entityManager.merge(initialUser);
+        User expectedUser = entityManager.merge(initialUser);
+        String existedEmail = initialUser.getEmail();
+        String notExistedEmail = "notExist";
+
+        User foundUser =
+                userRepository.findUserByEmail(existedEmail).orElse(null);
+
+        assertNotNull(foundUser);
+        assertEquals(expectedUser, foundUser);
+
+        User notFoundUser =
+                userRepository.findByLogin(notExistedEmail).orElse(null);
+
+        assertNull(notFoundUser);
     }
 }

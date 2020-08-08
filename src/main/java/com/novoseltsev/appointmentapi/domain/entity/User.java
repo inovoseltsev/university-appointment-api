@@ -10,7 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -22,7 +24,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
-import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkForRoleMatching;
 import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.EMAIL_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.FIRST_NAME_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.LAST_NAME_ERROR;
@@ -77,13 +78,14 @@ public class User extends AbstractEntity {
     private UserRole role;
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @JoinColumn(unique = true)
     private TeacherDetails teacherDetails;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
-    private List<Appointment> teacherAppointments;
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<Appointment> studentAppointments;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "usr_appointment", joinColumns = @JoinColumn(name =
+            "user_id", nullable = false), inverseJoinColumns =
+    @JoinColumn(name = "appointment_id", nullable = false))
+    private List<Appointment> appointments;
 
     public User(String firstName, String lastName, String login, String email,
                 String password) {
@@ -92,15 +94,5 @@ public class User extends AbstractEntity {
         this.login = login;
         this.email = email;
         this.password = password;
-    }
-
-    public void setTeacherAppointments(List<Appointment> teacherAppointments) {
-        checkForRoleMatching(this, UserRole.STUDENT);
-        this.teacherAppointments = teacherAppointments;
-    }
-
-    public void setStudentAppointments(List<Appointment> studentAppointments) {
-        checkForRoleMatching(this, UserRole.TEACHER);
-        this.studentAppointments = studentAppointments;
     }
 }

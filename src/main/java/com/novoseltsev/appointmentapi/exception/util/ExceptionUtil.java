@@ -15,10 +15,16 @@ public final class ExceptionUtil {
         }
     }
 
-    public static void checkForRoleMatching(User user, UserRole forbiddenRole) {
-        if (user.getRole().equals(forbiddenRole)) {
-            throw new InappropriateUserRoleException("User role is "
-                    + "inappropriate!");
+    public static void checkAppointmentUsersForRoleMatching(User teacher,
+                                                            User student) {
+        UserRole teacherRole = teacher.getRole();
+        UserRole studentRole = student.getRole();
+        if (!teacherRole.equals(UserRole.TEACHER)) {
+            throw new InappropriateUserRoleException("Teacher argument has "
+                    + "role \"" + teacherRole + "\"!");
+        } else if (!studentRole.equals(UserRole.STUDENT)) {
+            throw new InappropriateUserRoleException("Student argument has "
+                    + "role \"" + teacherRole + "\"!");
         }
     }
 }

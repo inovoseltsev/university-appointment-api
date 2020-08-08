@@ -1,24 +1,28 @@
 package com.novoseltsev.appointmentapi.domain.entity;
 
 import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntity;
-import com.novoseltsev.appointmentapi.domain.role.UserRole;
 import com.novoseltsev.appointmentapi.domain.status.AppointmentStatus;
-import java.sql.Date;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
-import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkForRoleMatching;
+import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkAppointmentUsersForRoleMatching;
 
 @Data
 @NoArgsConstructor
@@ -36,17 +40,13 @@ public class Appointment extends AbstractEntity {
     @NotNull
     private Date endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "usr_teacher_id", nullable = false)
+    @ManyToMany(mappedBy = "appointments", cascade = CascadeType.ALL)
     @NotNull
-    private User teacher;
+    @Size(min = 2, max = 2)
+    @Setter(value = AccessLevel.NONE)
+    private List<User> users;
 
-    @ManyToOne
-    @JoinColumn(name = "usr_student_id", nullable = false)
-    @NotNull
-    private User student;
-
-    @Column(length = 25)
+    @Column(length = 25, nullable = false)
     @Enumerated(value = EnumType.STRING)
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
@@ -55,13 +55,8 @@ public class Appointment extends AbstractEntity {
         this.endDate = endDate;
     }
 
-    public void setTeacher(User teacher) {
-        checkForRoleMatching(teacher, UserRole.STUDENT);
-        this.teacher = teacher;
-    }
-
-    public void setStudent(User student) {
-        checkForRoleMatching(student, UserRole.TEACHER);
-        this.student = student;
+    public void setUsers(User teacher, User student) {
+        checkAppointmentUsersForRoleMatching(teacher, student);
+        this.users = Arrays.asList(teacher, student);
     }
 }

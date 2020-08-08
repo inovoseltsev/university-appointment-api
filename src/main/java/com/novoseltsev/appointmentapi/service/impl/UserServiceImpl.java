@@ -61,12 +61,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByLogin(String login) {
         checkArgumentForNull(login, "found by login");
-        return userRepository.findByLogin(login);
+        return userRepository.findByLogin(login).orElse(null);
     }
 
     @Override
     public User findByEmail(String email) {
         checkArgumentForNull(email, "found by email");
-        return userRepository.findByEmail(email);
+        return userRepository.findUserByEmail(email).orElse(null);
     }
 }

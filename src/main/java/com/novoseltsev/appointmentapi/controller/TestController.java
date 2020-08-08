@@ -1,6 +1,6 @@
 package com.novoseltsev.appointmentapi.controller;
 
-import com.novoseltsev.appointmentapi.domain.entity.User;
+import java.util.Date;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("/")
-    public User start() {
-        return new User();
+    public Date start() {
+        return null;
     }
 }
