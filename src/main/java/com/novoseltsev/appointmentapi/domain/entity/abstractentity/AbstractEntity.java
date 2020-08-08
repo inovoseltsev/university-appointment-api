@@ -9,7 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+@Data
+@EqualsAndHashCode(of = {"id"})
 @MappedSuperclass
 public abstract class AbstractEntity {
 
@@ -17,10 +23,12 @@ public abstract class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date creationDate;
 
+    @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date updateDate;
@@ -28,29 +36,5 @@ public abstract class AbstractEntity {
     public AbstractEntity() {
         creationDate = new Date();
         updateDate = new Date();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
     }
 }

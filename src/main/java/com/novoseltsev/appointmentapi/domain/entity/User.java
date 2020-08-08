@@ -3,18 +3,26 @@ package com.novoseltsev.appointmentapi.domain.entity;
 import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntity;
 import com.novoseltsev.appointmentapi.domain.role.UserRole;
 import com.novoseltsev.appointmentapi.domain.status.UserStatus;
-import java.util.Objects;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 
+import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkForRoleMatching;
 import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.EMAIL_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.FIRST_NAME_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.LAST_NAME_ERROR;
@@ -25,9 +33,11 @@ import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.LOGIN
 import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.NAME_PATTERN;
 import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.PASSWORD_PATTERN;
 
-
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"email", "login"}, callSuper = true)
 @Entity
-@Table(name = "users")
+@Table(name = "usr")
 public class User extends AbstractEntity {
 
     @Column(nullable = false)
@@ -60,118 +70,37 @@ public class User extends AbstractEntity {
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 25, nullable = false)
-    private UserStatus status = UserStatus.ACTIVE;
+    private UserStatus status;
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 25, nullable = false)
     private UserRole role;
 
-    public User() {
-    }
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private TeacherDetails teacherDetails;
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    private List<Appointment> teacherAppointments;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<Appointment> studentAppointments;
 
     public User(String firstName, String lastName, String login, String email,
-                String password, UserRole role) {
+                String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.email = email;
         this.password = password;
-        this.role = role;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public void setTeacherAppointments(List<Appointment> teacherAppointments) {
+        checkForRoleMatching(this, UserRole.STUDENT);
+        this.teacherAppointments = teacherAppointments;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRepeatedPassword() {
-        return repeatedPassword;
-    }
-
-    public void setRepeatedPassword(String repeatedPassword) {
-        this.repeatedPassword = repeatedPassword;
-    }
-
-    public UserStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
-
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return firstName.equals(user.firstName) &&
-                lastName.equals(user.lastName) &&
-                login.equals(user.login) &&
-                email.equals(user.email) &&
-                password.equals(user.password) &&
-                status == user.status &&
-                role == user.role;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName, login, email, password, status, role);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", login='" + login + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", status=" + status +
-                ", role=" + role +
-                '}';
+    public void setStudentAppointments(List<Appointment> studentAppointments) {
+        checkForRoleMatching(this, UserRole.TEACHER);
+        this.studentAppointments = studentAppointments;
     }
 }

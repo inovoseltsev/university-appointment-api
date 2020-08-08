@@ -1,9 +1,9 @@
 package com.novoseltsev.appointmentapi.domain.entity;
 
 import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntity;
+import com.novoseltsev.appointmentapi.domain.role.UserRole;
 import com.novoseltsev.appointmentapi.domain.status.AppointmentStatus;
 import java.sql.Date;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,7 +13,16 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+
+import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkForRoleMatching;
+
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 public class Appointment extends AbstractEntity {
 
@@ -28,95 +37,31 @@ public class Appointment extends AbstractEntity {
     private Date endDate;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "usr_teacher_id", nullable = false)
     @NotNull
-    private Teacher teacher;
+    private User teacher;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "usr_student_id", nullable = false)
     @NotNull
-    private Student student;
+    private User student;
 
     @Column(length = 25)
     @Enumerated(value = EnumType.STRING)
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
-    public Appointment() {
-    }
-
-    public Appointment(Date startDate, Date endDate, Teacher teacher,
-                       Student student) {
+    public Appointment(Date startDate, Date endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
-        this.teacher = teacher;
-        this.student = student;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
+    public void setTeacher(User teacher) {
+        checkForRoleMatching(teacher, UserRole.STUDENT);
         this.teacher = teacher;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
+    public void setStudent(User student) {
+        checkForRoleMatching(student, UserRole.TEACHER);
         this.student = student;
-    }
-
-    public AppointmentStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AppointmentStatus status) {
-        this.status = status;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Appointment that = (Appointment) o;
-        return startDate.equals(that.startDate) &&
-                endDate.equals(that.endDate) &&
-                teacher.equals(that.teacher) &&
-                student.equals(that.student) &&
-                status == that.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(startDate, endDate, teacher, student, status);
-    }
-
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", teacher=" + teacher +
-                ", student=" + student +
-                ", status=" + status +
-                '}';
     }
 }

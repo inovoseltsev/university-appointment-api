@@ -1,6 +1,6 @@
 package com.novoseltsev.appointmentapi.validation.message;
 
-public class ErrorMessageUtil {
+public final class ErrorMessageUtil {
 
     private static final String BASE_MESSAGE_PART = " is not correct!";
 
