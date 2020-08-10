@@ -1,6 +1,6 @@
 package com.novoseltsev.appointmentapi.validation.message;
 
-public final class ErrorMessageUtil {
+public final class ValidationMessageUtil {
 
     private static final String BASE_MESSAGE_PART = " is not correct!";
 
@@ -21,4 +21,7 @@ public final class ErrorMessageUtil {
 
     public static final String REPEATED_PASSWORD_ERROR =
             "User repeated password" + BASE_MESSAGE_PART;
+
+    public static final String USER_ROLE_ERROR =
+            "User role" + BASE_MESSAGE_PART;
 }

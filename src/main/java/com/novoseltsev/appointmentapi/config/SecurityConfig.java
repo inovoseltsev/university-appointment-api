@@ -17,8 +17,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtConfigurer jwtConfigurer;
 
-    private static final String TEACHER_ENDPOINTS = "appointment-api/teacher/**";
-    private static final String STUDENT_ENDPOINTS = "appointment-api/student/**";
+    private static final String TEACHER_ENDPOINTS =
+            "/api/v1/appointments/teacher/**";
+    private static final String STUDENT_ENDPOINTS =
+            "/api/v1/appointments/student/**";
+    private static final String[] FREE_ENDPOINT =
+            new String[]{"/api/v1/appointments/auth/**"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,10 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/appointment-api", "/appointment-api/auth")
-                .permitAll()
-                .antMatchers(TEACHER_ENDPOINTS).hasRole("TEACHER")
-                .antMatchers(STUDENT_ENDPOINTS).hasRole("STUDENT")
+                .antMatchers(FREE_ENDPOINT).permitAll()
+                .antMatchers(TEACHER_ENDPOINTS).hasAuthority("TEACHER")
+                .antMatchers(STUDENT_ENDPOINTS).hasAuthority("STUDENT")
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigurer);

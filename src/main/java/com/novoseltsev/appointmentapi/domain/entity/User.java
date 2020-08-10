@@ -15,7 +15,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -24,15 +23,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
-import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.EMAIL_ERROR;
-import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.FIRST_NAME_ERROR;
-import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.LAST_NAME_ERROR;
-import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.LOGIN_ERROR;
-import static com.novoseltsev.appointmentapi.validation.message.ErrorMessageUtil.PASSWORD_ERROR;
+import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.EMAIL_ERROR;
+import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.FIRST_NAME_ERROR;
+import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.LAST_NAME_ERROR;
+import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.LOGIN_ERROR;
+import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.PASSWORD_ERROR;
 import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.EMAIL_PATTERN;
 import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.LOGIN_PATTERN;
 import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.NAME_PATTERN;
-import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.PASSWORD_PATTERN;
 
 @Data
 @NoArgsConstructor
@@ -63,11 +61,7 @@ public class User extends AbstractEntity {
 
     @Column(nullable = false)
     @NotBlank(message = PASSWORD_ERROR)
-    @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_ERROR)
     private String password;
-
-    @Transient
-    private String repeatedPassword;
 
     @Enumerated(value = EnumType.STRING)
     @Column(length = 25, nullable = false)

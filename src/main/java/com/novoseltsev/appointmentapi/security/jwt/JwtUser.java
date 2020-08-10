@@ -4,10 +4,12 @@ import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.domain.status.UserStatus;
 import java.util.Collection;
 import java.util.Collections;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@ToString
 public class JwtUser implements UserDetails {
 
     private final User user;

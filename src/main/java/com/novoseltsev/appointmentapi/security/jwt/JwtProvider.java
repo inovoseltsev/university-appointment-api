@@ -2,6 +2,7 @@ package com.novoseltsev.appointmentapi.security.jwt;
 
 import com.novoseltsev.appointmentapi.domain.role.UserRole;
 import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
+import com.novoseltsev.appointmentapi.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -12,16 +13,15 @@ import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtTokenProvider {
+public class JwtProvider {
 
     @Value("${jwt.token.secret}")
     private String secret;
@@ -30,8 +30,7 @@ public class JwtTokenProvider {
     private long tokenMillisecondsValidity;
 
     @Autowired
-    @Qualifier("userDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
+    private UserService userService;
 
     @PostConstruct
     protected void init() {
@@ -54,7 +53,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails =
-                this.userDetailsService.loadUserByUsername(getLogin(token));
+                new JwtUser(userService.findById(getUserId(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, "",
                 userDetails.getAuthorities());
     }
@@ -67,9 +66,9 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public String getLogin(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
-                .getBody().getSubject();
+    public Long getUserId(String token) {
+        return Long.valueOf(Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
+                .getBody().getSubject());
     }
 
     public boolean isValid(String token) {

@@ -1,4 +1,4 @@
-package com.novoseltsev.appointmentapi.security;
+package com.novoseltsev.appointmentapi.security.details;
 
 import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.security.jwt.JwtUser;

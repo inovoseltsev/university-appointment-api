@@ -1,5 +1,6 @@
 package com.novoseltsev.appointmentapi.security.jwt;
 
+import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,20 +15,24 @@ import org.springframework.web.filter.GenericFilterBean;
 
 
 @Component
-public class JwtTokenFilter extends GenericFilterBean {
+public class JwtFilter extends GenericFilterBean {
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private JwtProvider jwtProvider;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token =
-                jwtTokenProvider.resolveToken((HttpServletRequest) request);
-        if (token != null && jwtTokenProvider.isValid(token)) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
-            if (auth != null) {
-                SecurityContextHolder.getContext().setAuthentication(auth);
+        try {
+            String token =
+                    jwtProvider.resolveToken((HttpServletRequest) request);
+            if (token != null && jwtProvider.isValid(token)) {
+                Authentication auth = jwtProvider.getAuthentication(token);
+                if (auth != null) {
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
             }
+        } catch (JwtAuthenticationException | IllegalArgumentException e) {
+            SecurityContextHolder.getContext().setAuthentication(null);
         }
         chain.doFilter(request, response);
     }
