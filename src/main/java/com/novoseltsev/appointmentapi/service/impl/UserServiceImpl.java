@@ -2,6 +2,7 @@ package com.novoseltsev.appointmentapi.service.impl;
 
 import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.domain.status.UserStatus;
+import com.novoseltsev.appointmentapi.exception.UserNotFoundException;
 import com.novoseltsev.appointmentapi.repository.UserRepository;
 import com.novoseltsev.appointmentapi.service.UserService;
 import java.util.List;
@@ -55,18 +56,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         checkArgumentForNull(id, "found by id");
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public User findByLogin(String login) {
         checkArgumentForNull(login, "found by login");
-        return userRepository.findByLogin(login).orElse(null);
+        return userRepository.findByLogin(login)
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public User findByEmail(String email) {
         checkArgumentForNull(email, "found by email");
-        return userRepository.findUserByEmail(email).orElse(null);
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(UserNotFoundException::new);
     }
 }

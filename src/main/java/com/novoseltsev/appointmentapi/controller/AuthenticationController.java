@@ -2,6 +2,9 @@ package com.novoseltsev.appointmentapi.controller;
 
 import com.novoseltsev.appointmentapi.domain.dto.AuthenticationDto;
 import com.novoseltsev.appointmentapi.domain.entity.User;
+import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
+import com.novoseltsev.appointmentapi.exception.UserNotFoundException;
+import com.novoseltsev.appointmentapi.exception.util.ExceptionUtil;
 import com.novoseltsev.appointmentapi.security.jwt.JwtProvider;
 import com.novoseltsev.appointmentapi.service.UserService;
 import java.util.HashMap;
@@ -11,11 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.validation.FieldError;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +32,9 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private JwtProvider jwtProvider;
 
     @Autowired
@@ -39,37 +42,34 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<Object, Object>> login(@Valid @RequestBody AuthenticationDto authDto) {
-
-        try {
-            String login = authDto.getLogin();
-            String password = authDto.getPassword();
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(login, password));
-            User user = userService.findByLogin(login);
-            if (user == null) {
-                throw new UsernameNotFoundException("User with login: " + login
-                        + " not found!");
-            }
-            String token = jwtProvider.createToken(String.valueOf(user.getId()),
-                    user.getRole());
-            Map<Object, Object> response = new HashMap<>();
-            response.put("token", token);
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid login or password!");
+        String login = authDto.getLogin();
+        String password = authDto.getPassword();
+        User user = userService.findByLogin(login);
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new JwtAuthenticationException("");
         }
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(login, password));
+        String token = jwtProvider.createToken(String.valueOf(user.getId()),
+                user.getRole());
+        Map<Object, Object> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
+    private Map<String, String> handleValidationException(
+            MethodArgumentNotValidException e) {
+        return ExceptionUtil.handleValidationErrors(e);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler({UserNotFoundException.class,
+            JwtAuthenticationException.class})
+    private Map<String, String> handleInvalidCredentials() {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Login or password is not correct");
+        return error;
     }
 }

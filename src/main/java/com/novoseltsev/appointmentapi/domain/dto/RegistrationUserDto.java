@@ -72,6 +72,8 @@ public class RegistrationUserDto {
         userDto.setLastName(user.getLastName());
         userDto.setLogin(user.getLogin());
         userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setRepeatedPassword(user.getPassword());
         userDto.setRole(user.getRole());
         return userDto;
     }

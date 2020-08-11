@@ -1,12 +1,16 @@
 package com.novoseltsev.appointmentapi.security.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,9 +35,18 @@ public class JwtFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
+            chain.doFilter(request, response);
         } catch (JwtAuthenticationException | IllegalArgumentException e) {
-            SecurityContextHolder.getContext().setAuthentication(null);
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            httpServletResponse.getWriter().write(new ObjectMapper()
+                    .writeValueAsString(error));
+            httpServletResponse.getWriter().flush();
+            httpServletResponse.getWriter().close();
         }
-        chain.doFilter(request, response);
     }
 }
