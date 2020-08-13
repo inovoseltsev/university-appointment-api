@@ -2,6 +2,7 @@ package com.novoseltsev.appointmentapi.domain.entity;
 
 import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntity;
 import java.sql.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -29,7 +30,7 @@ public class ScheduleDay extends AbstractEntity {
     @NotNull
     private Date openTimeEnd;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
     private TeacherDetails teacherDetails;
 

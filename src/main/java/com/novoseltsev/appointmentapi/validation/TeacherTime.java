@@ -21,7 +21,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = TeacherTimeValidator.class)
 @Documented
 public @interface TeacherTime {
-    String message() default "{constraints.teachertimematch}";
+    String message() default "Teacher time "
+            + "number must be a multiple of 15. Was ";
 
     Class<?>[] groups() default {};
 

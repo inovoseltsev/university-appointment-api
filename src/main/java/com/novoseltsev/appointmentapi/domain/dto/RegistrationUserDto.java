@@ -16,7 +16,6 @@ import static com.novoseltsev.appointmentapi.validation.message.ValidationMessag
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.LAST_NAME_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.LOGIN_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.PASSWORD_ERROR;
-import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.REPEATED_PASSWORD_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.USER_ROLE_ERROR;
 import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.EMAIL_PATTERN;
 import static com.novoseltsev.appointmentapi.validation.regexp.PatternUtil.LOGIN_PATTERN;
@@ -48,10 +47,6 @@ public class RegistrationUserDto {
     @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_ERROR)
     private String password;
 
-    @NotBlank(message = REPEATED_PASSWORD_ERROR)
-    @Pattern(regexp = PASSWORD_PATTERN, message = REPEATED_PASSWORD_ERROR)
-    private String repeatedPassword;
-
     @NotNull(message = USER_ROLE_ERROR)
     private UserRole role;
 
@@ -73,7 +68,6 @@ public class RegistrationUserDto {
         userDto.setLogin(user.getLogin());
         userDto.setEmail(user.getEmail());
         userDto.setPassword(user.getPassword());
-        userDto.setRepeatedPassword(user.getPassword());
         userDto.setRole(user.getRole());
         return userDto;
     }

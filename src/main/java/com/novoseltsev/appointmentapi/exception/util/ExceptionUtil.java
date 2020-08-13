@@ -11,7 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 public final class ExceptionUtil {
 
     public static void checkArgumentForNull(Object obj, String processName) {
-        String errorMessage = "User cannot be " + processName
+        String errorMessage = "Cannot " + processName
                 + " because argument is null!";
         if (obj == null) {
             throw new IllegalArgumentException(errorMessage);

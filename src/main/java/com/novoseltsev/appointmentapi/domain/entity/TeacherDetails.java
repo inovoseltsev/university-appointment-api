@@ -1,6 +1,7 @@
 package com.novoseltsev.appointmentapi.domain.entity;
 
 import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntity;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -22,15 +23,16 @@ public class TeacherDetails extends AbstractEntity {
     @JoinColumn(nullable = false, unique = true)
     private User user;
 
-    @OneToMany(mappedBy = "teacherDetails", cascade = CascadeType.ALL)
-    private List<Price> priceList;
+    @OneToMany(mappedBy = "teacherDetails", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Price> priceList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacherDetails", cascade = CascadeType.ALL)
-    private List<ScheduleDay> schedule;
+    @OneToMany(mappedBy = "teacherDetails")
+    private List<ScheduleDay> schedule = new ArrayList<>();
 
-    public TeacherDetails(User user, List<Price> priceList) {
+    public TeacherDetails(User user) {
         this.user = user;
-        this.priceList = priceList;
+        user.setTeacherDetails(this);
     }
 
     public TeacherDetails(List<ScheduleDay> schedule, User user) {

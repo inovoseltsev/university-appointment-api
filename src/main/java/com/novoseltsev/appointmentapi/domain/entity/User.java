@@ -21,6 +21,7 @@ import javax.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.EMAIL_ERROR;
@@ -71,8 +72,10 @@ public class User extends AbstractEntity {
     @Column(length = 25, nullable = false)
     private UserRole role;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade =
+            CascadeType.ALL)
     @JoinColumn(unique = true)
+    @ToString.Exclude
     private TeacherDetails teacherDetails;
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -18,11 +18,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtConfigurer jwtConfigurer;
 
     private static final String TEACHER_ENDPOINTS =
-            "/api/v1/appointments/teacher/**";
+            "/api/v1/appointments/users/teachers/**";
     private static final String STUDENT_ENDPOINTS =
-            "/api/v1/appointments/student/**";
+            "/api/v1/appointments/users/students/**";
     private static final String[] FREE_ENDPOINT =
-            new String[]{"/api/v1/appointments/auth/**"};
+            new String[]{"/api/v1/appointments/auth/**",
+                    "/api/v1/appointments/users/registration"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

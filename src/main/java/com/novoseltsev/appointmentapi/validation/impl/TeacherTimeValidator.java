@@ -18,7 +18,7 @@ public class TeacherTimeValidator implements ConstraintValidator<TeacherTime, In
 
     @Override
     public boolean isValid(Integer value, ConstraintValidatorContext context) {
-        return value.compareTo(minimalTime) > 0
+        return value.compareTo(minimalTime) >= 0
                 && value % minimalTime == 0
                 && value.compareTo(200) < 0;
     }
