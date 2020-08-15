@@ -1,8 +1,9 @@
-package com.novoseltsev.appointmentapi.exception.exceptionhandler;
+package com.novoseltsev.appointmentapi.exception.util.exceptionhandler;
 
-import com.novoseltsev.appointmentapi.exception.PriceNotFoundException;
-import com.novoseltsev.appointmentapi.exception.RegistrationUserException;
-import com.novoseltsev.appointmentapi.exception.UserNotFoundException;
+import com.novoseltsev.appointmentapi.exception.price.PriceNotFoundException;
+import com.novoseltsev.appointmentapi.exception.schedule.DayNotFoundException;
+import com.novoseltsev.appointmentapi.exception.user.RegistrationUserException;
+import com.novoseltsev.appointmentapi.exception.user.UserNotFoundException;
 import com.novoseltsev.appointmentapi.exception.util.ExceptionUtil;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +63,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handlePriceNotFoundException() {
         errors = new HashMap<>();
         errors.put("error", "Price with such id not found");
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DayNotFoundException.class)
+    private ResponseEntity<Object> handleDayNotFoundException() {
+        errors = new HashMap<>();
+        errors.put("error", "Day with such id not found");
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 }

@@ -1,7 +1,7 @@
 package com.novoseltsev.appointmentapi.security.jwt;
 
 import com.novoseltsev.appointmentapi.domain.role.UserRole;
-import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
+import com.novoseltsev.appointmentapi.exception.auth.JwtAuthenticationException;
 import com.novoseltsev.appointmentapi.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 

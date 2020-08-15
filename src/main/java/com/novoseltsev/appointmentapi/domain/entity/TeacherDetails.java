@@ -23,11 +23,12 @@ public class TeacherDetails extends AbstractEntity {
     @JoinColumn(nullable = false, unique = true)
     private User user;
 
-    @OneToMany(mappedBy = "teacherDetails", fetch = FetchType.EAGER,
+    @OneToMany(mappedBy = "teacherDetails",
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Price> priceList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teacherDetails")
+    @OneToMany(mappedBy = "teacherDetails",
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleDay> schedule = new ArrayList<>();
 
     public TeacherDetails(User user) {

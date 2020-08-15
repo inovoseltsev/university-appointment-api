@@ -1,4 +1,4 @@
-package com.novoseltsev.appointmentapi.exception;
+package com.novoseltsev.appointmentapi.exception.auth;
 
 import org.springframework.security.core.AuthenticationException;
 

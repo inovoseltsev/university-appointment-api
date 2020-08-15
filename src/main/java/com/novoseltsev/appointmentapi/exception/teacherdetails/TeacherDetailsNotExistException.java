@@ -1,4 +1,4 @@
-package com.novoseltsev.appointmentapi.exception;
+package com.novoseltsev.appointmentapi.exception.teacherdetails;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

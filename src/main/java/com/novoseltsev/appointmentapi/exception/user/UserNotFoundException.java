@@ -1,4 +1,4 @@
-package com.novoseltsev.appointmentapi.exception;
+package com.novoseltsev.appointmentapi.exception.user;
 
 public class UserNotFoundException extends RuntimeException {
 

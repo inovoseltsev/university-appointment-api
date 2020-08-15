@@ -2,9 +2,9 @@ package com.novoseltsev.appointmentapi.service.impl;
 
 import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.domain.status.UserStatus;
-import com.novoseltsev.appointmentapi.exception.RegistrationUserException;
-import com.novoseltsev.appointmentapi.exception.UserNotFoundException;
-import com.novoseltsev.appointmentapi.exception.UserPasswordUpdateException;
+import com.novoseltsev.appointmentapi.exception.user.RegistrationUserException;
+import com.novoseltsev.appointmentapi.exception.user.UserNotFoundException;
+import com.novoseltsev.appointmentapi.exception.user.UserPasswordUpdateException;
 import com.novoseltsev.appointmentapi.repository.UserRepository;
 import com.novoseltsev.appointmentapi.service.UserService;
 import java.util.List;
@@ -12,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-
-import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkArgumentForNull;
 
 @Component
 public class UserServiceImpl implements UserService {
@@ -28,7 +25,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User create(User user) {
-        checkArgumentForNull(user, "created");
         checkLoginAndEmailUniqueness(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
@@ -38,7 +34,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User update(User user) {
-        checkArgumentForNull(user, "updated");
         User foundUser = findById(user.getId());
         foundUser.setFirstName(user.getFirstName());
         user.setLastName(user.getLastName());
@@ -70,7 +65,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        checkArgumentForNull(id, "deleted by id");
         findById(id);
         userRepository.deleteById(id);
     }
@@ -84,7 +78,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findById(Long id) {
-        checkArgumentForNull(id, "found by id");
         return userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
     }
@@ -92,7 +85,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findByLogin(String login) {
-        checkArgumentForNull(login, "found by login");
         return userRepository.findByLogin(login)
                 .orElseThrow(UserNotFoundException::new);
     }
@@ -100,7 +92,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findByEmail(String email) {
-        checkArgumentForNull(email, "found by email");
         return userRepository.findUserByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
     }

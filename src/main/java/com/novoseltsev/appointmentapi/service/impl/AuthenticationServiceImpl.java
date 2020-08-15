@@ -1,7 +1,7 @@
 package com.novoseltsev.appointmentapi.service.impl;
 
 import com.novoseltsev.appointmentapi.domain.entity.User;
-import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
+import com.novoseltsev.appointmentapi.exception.auth.JwtAuthenticationException;
 import com.novoseltsev.appointmentapi.security.jwt.JwtProvider;
 import com.novoseltsev.appointmentapi.service.AuthenticationService;
 import com.novoseltsev.appointmentapi.service.UserService;

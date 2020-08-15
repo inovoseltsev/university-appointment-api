@@ -1,8 +1,8 @@
 package com.novoseltsev.appointmentapi.controller;
 
 import com.novoseltsev.appointmentapi.domain.dto.AuthenticationDto;
-import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
-import com.novoseltsev.appointmentapi.exception.UserNotFoundException;
+import com.novoseltsev.appointmentapi.exception.auth.JwtAuthenticationException;
+import com.novoseltsev.appointmentapi.exception.user.UserNotFoundException;
 import com.novoseltsev.appointmentapi.service.AuthenticationService;
 import java.util.HashMap;
 import java.util.Map;

@@ -2,7 +2,7 @@ package com.novoseltsev.appointmentapi.exception.util;
 
 import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.domain.role.UserRole;
-import com.novoseltsev.appointmentapi.exception.InappropriateUserRoleException;
+import com.novoseltsev.appointmentapi.exception.user.InappropriateUserRoleException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.validation.FieldError;

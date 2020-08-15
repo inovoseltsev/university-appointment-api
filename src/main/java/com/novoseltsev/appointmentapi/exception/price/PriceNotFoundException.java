@@ -1,4 +1,4 @@
-package com.novoseltsev.appointmentapi.exception;
+package com.novoseltsev.appointmentapi.exception.price;
 
 public class PriceNotFoundException extends RuntimeException {
 

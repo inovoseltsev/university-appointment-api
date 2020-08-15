@@ -1,7 +1,7 @@
 package com.novoseltsev.appointmentapi.security.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.novoseltsev.appointmentapi.exception.JwtAuthenticationException;
+import com.novoseltsev.appointmentapi.exception.auth.JwtAuthenticationException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
