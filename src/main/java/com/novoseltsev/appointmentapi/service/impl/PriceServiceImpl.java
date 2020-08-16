@@ -65,6 +65,7 @@ public class PriceServiceImpl implements PriceService {
                 price.setPrice(queuePrice.getPrice());
             }
         });
+        priceRepository.saveAll(savedPrices);
     }
 
     @Override

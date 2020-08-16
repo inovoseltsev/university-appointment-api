@@ -28,15 +28,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable Long id) {
+        return UserDto.fromUser(userService.findById(id));
+    }
+
     @GetMapping
     public List<UserDto> getUsers() {
         return userService.findAll().stream().map(UserDto::fromUser)
                 .collect(Collectors.toList());
-    }
-
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) {
-        return UserDto.fromUser(userService.findById(id));
     }
 
     @PostMapping("/registration")

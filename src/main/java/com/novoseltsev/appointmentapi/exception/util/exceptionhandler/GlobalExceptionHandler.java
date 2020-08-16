@@ -1,9 +1,6 @@
 package com.novoseltsev.appointmentapi.exception.util.exceptionhandler;
 
-import com.novoseltsev.appointmentapi.exception.price.PriceNotFoundException;
-import com.novoseltsev.appointmentapi.exception.schedule.DayNotFoundException;
 import com.novoseltsev.appointmentapi.exception.user.RegistrationUserException;
-import com.novoseltsev.appointmentapi.exception.user.UserNotFoundException;
 import com.novoseltsev.appointmentapi.exception.util.ExceptionUtil;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,20 +22,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private Map<String, String> errors;
 
     @ExceptionHandler(ConstraintViolationException.class)
-    private ResponseEntity<Object> handleValidationException(ConstraintViolationException e) {
+    private ResponseEntity<Object> handleValidationException(
+            ConstraintViolationException e
+    ) {
         errors = new HashMap<>();
         Set<ConstraintViolation<?>> constraintViolations =
                 e.getConstraintViolations();
         constraintViolations.forEach(constraintViolation -> errors.put("error",
-                constraintViolation.getMessage() + constraintViolation.getInvalidValue()));
+                constraintViolation.getMessage() + " " + constraintViolation
+                        .getPropertyPath() + " but was " + constraintViolation
+                        .getInvalidValue()));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    private ResponseEntity<Object> handleUserNotFoundException() {
-        errors = new HashMap<>();
-        errors.put("error", "User with such parameter doesn't exist");
-        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
     @Override
@@ -53,23 +47,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RegistrationUserException.class)
-    private ResponseEntity<Object> handleRegistrationUserException(RegistrationUserException e) {
+    private ResponseEntity<Object> handleRegistrationUserException(
+            RegistrationUserException e
+    ) {
         errors = new HashMap<>();
         errors.put("error", "Bad user " + e.getMessage() + " in registration");
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(PriceNotFoundException.class)
-    private ResponseEntity<Object> handlePriceNotFoundException() {
-        errors = new HashMap<>();
-        errors.put("error", "Price with such id not found");
-        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DayNotFoundException.class)
-    private ResponseEntity<Object> handleDayNotFoundException() {
-        errors = new HashMap<>();
-        errors.put("error", "Day with such id not found");
-        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 }

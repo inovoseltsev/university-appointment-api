@@ -38,7 +38,7 @@ public class ScheduleController {
     public List<ScheduleDayDto> getTeacherSchedule(
             @PathVariable Long teacherId
     ) {
-        return scheduleService.findTeacherSchedule(teacherId)
+        return scheduleService.findTeacherScheduleDays(teacherId)
                 .stream().map(ScheduleDayDto::fromScheduleDay)
                 .collect(Collectors.toList());
     }
@@ -71,11 +71,14 @@ public class ScheduleController {
                 .updateDay(dayDto.toScheduleDay()));
     }
 
-    @PutMapping("/many")
-    public void updateDays(@RequestBody Queue<@Valid ScheduleDayDto> daysDto) {
-        scheduleService.updateAll(daysDto.stream()
+    @PutMapping("/many/{teacherId}")
+    public void updateTeacherDays(
+            @RequestBody Queue<@Valid ScheduleDayDto> daysDto,
+            @PathVariable Long teacherId
+    ) {
+        scheduleService.updateAllTeacherDays(daysDto.stream()
                 .map(ScheduleDayDto::toScheduleDay)
-                .collect(Collectors.toCollection(LinkedList::new)));
+                .collect(Collectors.toCollection(LinkedList::new)), teacherId);
     }
 
     @DeleteMapping("/{id}")

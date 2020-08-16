@@ -2,7 +2,7 @@ package com.novoseltsev.appointmentapi.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.novoseltsev.appointmentapi.domain.entity.Price;
-import com.novoseltsev.appointmentapi.validation.TeacherTime;
+import com.novoseltsev.appointmentapi.validation.annotation.TeacherTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.Data;

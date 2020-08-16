@@ -1,6 +1,6 @@
-package com.novoseltsev.appointmentapi.validation;
+package com.novoseltsev.appointmentapi.validation.annotation;
 
-import com.novoseltsev.appointmentapi.validation.impl.TeacherTimeValidator;
+import com.novoseltsev.appointmentapi.validation.annotation.impl.TeacherTimeValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

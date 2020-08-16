@@ -35,9 +35,4 @@ public class TeacherDetails extends AbstractEntity {
         this.user = user;
         user.setTeacherDetails(this);
     }
-
-    public TeacherDetails(List<ScheduleDay> schedule, User user) {
-        this.user = user;
-        this.schedule = schedule;
-    }
 }

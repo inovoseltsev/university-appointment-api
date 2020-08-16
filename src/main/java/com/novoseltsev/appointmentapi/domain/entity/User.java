@@ -3,7 +3,8 @@ package com.novoseltsev.appointmentapi.domain.entity;
 import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntity;
 import com.novoseltsev.appointmentapi.domain.role.UserRole;
 import com.novoseltsev.appointmentapi.domain.status.UserStatus;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +12,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -78,11 +78,18 @@ public class User extends AbstractEntity {
     @ToString.Exclude
     private TeacherDetails teacherDetails;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "usr_appointment", joinColumns = @JoinColumn(name =
-            "user_id", nullable = false), inverseJoinColumns =
-    @JoinColumn(name = "appointment_id", nullable = false))
-    private List<Appointment> appointments;
+    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    private Set<Appointment> appointments = new HashSet<>();
+
+    public void addAppointment(Appointment appointment) {
+        this.appointments.add(appointment);
+        appointment.getUsers().add(this);
+    }
+
+    public void removeAppointment(Appointment appointment) {
+        this.appointments.remove(appointment);
+        appointment.getUsers().remove(this);
+    }
 
     public User(String firstName, String lastName, String login, String email,
                 String password) {

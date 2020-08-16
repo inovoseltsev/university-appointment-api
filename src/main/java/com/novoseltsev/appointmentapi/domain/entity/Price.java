@@ -4,6 +4,7 @@ import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntit
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
@@ -29,14 +30,8 @@ public class Price extends AbstractEntity {
     @NotNull
     private Integer price;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_details_id", nullable = false)
     @ToString.Exclude
     private TeacherDetails teacherDetails;
-
-    public Price(Integer timeInMinutes, Integer price, TeacherDetails teacherDetails) {
-        this.timeInMinutes = timeInMinutes;
-        this.price = price;
-        this.teacherDetails = teacherDetails;
-    }
 }

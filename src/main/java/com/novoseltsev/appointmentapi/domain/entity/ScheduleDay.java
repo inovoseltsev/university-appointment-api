@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -35,15 +36,8 @@ public class ScheduleDay extends AbstractEntity {
     @NotNull
     private Date openTimeEnd;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_details_id", nullable = false)
     @ToString.Exclude
     private TeacherDetails teacherDetails;
-
-    public ScheduleDay(Date openTimeStart, Date openTimeEnd,
-                       TeacherDetails teacherDetails) {
-        this.openTimeStart = openTimeStart;
-        this.openTimeEnd = openTimeEnd;
-        this.teacherDetails = teacherDetails;
-    }
 }

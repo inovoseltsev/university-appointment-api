@@ -14,7 +14,7 @@ public interface ScheduleService {
 
     ScheduleDay updateDay(ScheduleDay scheduleDay);
 
-    void updateAll(Queue<ScheduleDay> updatedDays);
+    void updateAllTeacherDays(Queue<ScheduleDay> updatedDays, Long teacherId);
 
     void deleteDayById(Long id);
 
@@ -24,5 +24,5 @@ public interface ScheduleService {
 
     List<ScheduleDay> findAllByIdList(List<Long> scheduleDayIdList);
 
-    List<ScheduleDay> findTeacherSchedule(Long teacherId);
+    List<ScheduleDay> findTeacherScheduleDays(Long teacherId);
 }

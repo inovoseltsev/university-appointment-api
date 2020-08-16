@@ -4,22 +4,22 @@ import com.novoseltsev.appointmentapi.domain.entity.abstractentity.AbstractEntit
 import com.novoseltsev.appointmentapi.domain.status.AppointmentStatus;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import javax.persistence.CascadeType;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
 
 import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkAppointmentUsersForRoleMatching;
@@ -33,30 +33,27 @@ public class Appointment extends AbstractEntity {
     @Column(name = "start_date")
     @FutureOrPresent
     @NotNull
-    private Date startDate;
+    private Date startTime;
 
     @Column(name = "end_date")
     @Future
     @NotNull
-    private Date endDate;
+    private Date endTime;
 
-    @ManyToMany(mappedBy = "appointments", cascade = CascadeType.ALL)
     @NotNull
-    @Size(min = 2, max = 2)
-    @Setter(value = AccessLevel.NONE)
-    private List<User> users;
+    @ToString.Exclude
+    @ManyToMany
+    @JoinTable(name = "usr_appointment", joinColumns = @JoinColumn(name =
+            "appointment_id", nullable = false), inverseJoinColumns =
+    @JoinColumn(name = "user_id", nullable = false))
+    private Set<User> users = new HashSet<>();
 
     @Column(length = 25, nullable = false)
     @Enumerated(value = EnumType.STRING)
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
-    public Appointment(Date startDate, Date endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    public void setUsers(User teacher, User student) {
-        checkAppointmentUsersForRoleMatching(teacher, student);
-        this.users = Arrays.asList(teacher, student);
+    public void setUsers(User student, User teacher) {
+        checkAppointmentUsersForRoleMatching(student, teacher);
+        this.users.addAll(Arrays.asList(student, teacher));
     }
 }

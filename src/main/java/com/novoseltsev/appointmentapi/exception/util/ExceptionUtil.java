@@ -10,16 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 public final class ExceptionUtil {
 
-    public static void checkArgumentForNull(Object obj, String processName) {
-        String errorMessage = "Cannot " + processName
-                + " because argument is null!";
-        if (obj == null) {
-            throw new IllegalArgumentException(errorMessage);
-        }
-    }
-
-    public static void checkAppointmentUsersForRoleMatching(User teacher,
-                                                            User student) {
+    public static void checkAppointmentUsersForRoleMatching(User student,
+                                                            User teacher) {
         UserRole teacherRole = teacher.getRole();
         UserRole studentRole = student.getRole();
         if (!teacherRole.equals(UserRole.TEACHER)) {

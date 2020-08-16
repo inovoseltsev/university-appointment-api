@@ -1,6 +1,6 @@
-package com.novoseltsev.appointmentapi.validation.impl;
+package com.novoseltsev.appointmentapi.validation.annotation.impl;
 
-import com.novoseltsev.appointmentapi.validation.TeacherTime;
+import com.novoseltsev.appointmentapi.validation.annotation.TeacherTime;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Value;
