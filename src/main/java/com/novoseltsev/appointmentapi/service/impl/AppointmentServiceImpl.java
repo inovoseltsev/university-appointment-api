@@ -4,9 +4,9 @@ import com.novoseltsev.appointmentapi.domain.entity.Appointment;
 import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.domain.role.UserRole;
 import com.novoseltsev.appointmentapi.domain.status.AppointmentStatus;
-import com.novoseltsev.appointmentapi.exception.appointment.AppointmentNotFoundException;
-import com.novoseltsev.appointmentapi.exception.appointment.IncorrectTimeIntervalException;
-import com.novoseltsev.appointmentapi.exception.schedule.StartEndTimeException;
+import com.novoseltsev.appointmentapi.exception.time.AppointmentNotFoundException;
+import com.novoseltsev.appointmentapi.exception.time.IncorrectTimeIntervalException;
+import com.novoseltsev.appointmentapi.exception.time.StartEndTimeException;
 import com.novoseltsev.appointmentapi.repository.AppointmentRepository;
 import com.novoseltsev.appointmentapi.service.AppointmentService;
 import com.novoseltsev.appointmentapi.service.UserService;
@@ -118,7 +118,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         Set<Appointment> userAppointments = user.getAppointments();
         if (!userAppointments.isEmpty()) {
             userAppointments.forEach(userAppointment -> {
-                if (!userAppointment.getId().equals(appointment.getId())) {
+                if (!userAppointment.getId().equals(appointment.getId())
+                        && !userAppointment.getStatus()
+                        .equals(AppointmentStatus.DELETED)) {
                     Date startTime = userAppointment.getStartTime();
                     Date endTime = userAppointment.getEndTime();
                     if (appointment.getStartTime().before(endTime)

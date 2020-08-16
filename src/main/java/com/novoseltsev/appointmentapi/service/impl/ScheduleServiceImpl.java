@@ -3,10 +3,10 @@ package com.novoseltsev.appointmentapi.service.impl;
 import com.novoseltsev.appointmentapi.domain.entity.ScheduleDay;
 import com.novoseltsev.appointmentapi.domain.entity.TeacherDetails;
 import com.novoseltsev.appointmentapi.domain.entity.User;
-import com.novoseltsev.appointmentapi.exception.appointment.IncorrectTimeIntervalException;
-import com.novoseltsev.appointmentapi.exception.schedule.DayNotFoundException;
-import com.novoseltsev.appointmentapi.exception.schedule.StartEndTimeException;
 import com.novoseltsev.appointmentapi.exception.teacherdetails.TeacherDetailsNotExistException;
+import com.novoseltsev.appointmentapi.exception.time.DayNotFoundException;
+import com.novoseltsev.appointmentapi.exception.time.IncorrectTimeIntervalException;
+import com.novoseltsev.appointmentapi.exception.time.StartEndTimeException;
 import com.novoseltsev.appointmentapi.repository.ScheduleRepository;
 import com.novoseltsev.appointmentapi.service.ScheduleService;
 import com.novoseltsev.appointmentapi.service.TeacherDetailsService;
@@ -68,7 +68,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional
-    public void updateAllTeacherDays(Queue<ScheduleDay> updatedDays, Long teacherId) {
+    public void updateAllTeacherDays(
+            Queue<ScheduleDay> updatedDays,
+            Long teacherId
+    ) {
         checkTimeValidity(updatedDays);
         List<ScheduleDay> savedDays = findAllByIdList(updatedDays.stream()
                 .map(ScheduleDay::getId).collect(Collectors.toList()));
@@ -131,7 +134,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private void checkTimeValidity(Collection<ScheduleDay> days) {
         days.forEach(day -> {
-            if (day.getOpenTimeEnd().before(day.getOpenTimeStart())) {
+            if (day.getOpenTimeEnd().before(day.getOpenTimeStart())
+                    || day.getOpenTimeEnd().equals(day.getOpenTimeStart())) {
                 throw new StartEndTimeException("End date less than start "
                         + "date");
             }

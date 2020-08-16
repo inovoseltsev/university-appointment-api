@@ -34,7 +34,7 @@ public class ScheduleController {
         return ScheduleDayDto.fromScheduleDay(scheduleService.findById(id));
     }
 
-    @GetMapping("/teacher/{teacherId}")
+    @GetMapping("/teacher-days/{teacherId}")
     public List<ScheduleDayDto> getTeacherSchedule(
             @PathVariable Long teacherId
     ) {
@@ -54,7 +54,7 @@ public class ScheduleController {
                 HttpStatus.CREATED);
     }
 
-    @PostMapping("/teacher/many/{teacherId}")
+    @PostMapping("/teacher-days/{teacherId}")
     public ResponseEntity<HttpStatus> createDays(
             @PathVariable Long teacherId,
             @RequestBody List<@Valid ScheduleDayDto> daysDto
@@ -71,7 +71,7 @@ public class ScheduleController {
                 .updateDay(dayDto.toScheduleDay()));
     }
 
-    @PutMapping("/many/{teacherId}")
+    @PutMapping("/teacher-days/{teacherId}")
     public void updateTeacherDays(
             @RequestBody Queue<@Valid ScheduleDayDto> daysDto,
             @PathVariable Long teacherId

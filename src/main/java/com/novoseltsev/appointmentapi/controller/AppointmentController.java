@@ -29,7 +29,7 @@ public class AppointmentController {
         return AppointmentDto.from(appointmentService.findById(id));
     }
 
-    @GetMapping("/appointments/many/{userId}")
+    @GetMapping("/user-appointments/{userId}")
     public Set<AppointmentDto> getUserAppointments(@PathVariable Long userId) {
         return appointmentService.findUserAppointments(userId).stream()
                 .map(AppointmentDto::from).collect(Collectors.toSet());

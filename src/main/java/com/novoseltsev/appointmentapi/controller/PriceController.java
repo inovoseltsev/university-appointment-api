@@ -34,7 +34,7 @@ public class PriceController {
         return PriceDto.fromPrice(priceService.findById(priceId));
     }
 
-    @GetMapping("/teacher/{teacherId}")
+    @GetMapping("/teacher-prices/{teacherId}")
     public List<PriceDto> getTeacherPriceList(@PathVariable Long teacherId) {
         return priceService.findAllTeacherPrices(teacherId).stream()
                 .map(PriceDto::fromPrice).collect(Collectors.toList());
@@ -50,7 +50,7 @@ public class PriceController {
                 HttpStatus.CREATED);
     }
 
-    @PostMapping("/teacher/many/{teacherId}")
+    @PostMapping("/teacher-prices/{teacherId}")
     public ResponseEntity<HttpStatus> createPricesForTeacher(
             @RequestBody List<@Valid PriceDto> prices,
             @PathVariable Long teacherId
@@ -65,7 +65,7 @@ public class PriceController {
         return PriceDto.fromPrice(priceService.update(priceDto.toPrice()));
     }
 
-    @PutMapping("/many")
+    @PutMapping("/teacher-prices")
     public void updatePrices(@RequestBody Queue<@Valid PriceDto> pricesDto) {
         priceService.updateAll(pricesDto.stream().map(PriceDto::toPrice)
                 .collect(Collectors.toCollection(LinkedList::new)));
