@@ -2,6 +2,7 @@ package com.novoseltsev.appointmentapi.exception.util.exceptionhandler;
 
 import com.novoseltsev.appointmentapi.exception.user.RegistrationUserException;
 import com.novoseltsev.appointmentapi.exception.util.ExceptionUtil;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +53,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         errors = new HashMap<>();
         errors.put("error", "Bad user " + e.getMessage() + " in registration");
+        return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    private ResponseEntity<Object> handleDateTimeParseException(
+            DateTimeParseException e
+    ) {
+        errors = new HashMap<>();
+        errors.put("error", e.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
 }
