@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/appointments/users/teachers/schedule")
+@RequestMapping("api/v1/appointments-api/users/teachers/schedule")
 @Validated
 public class ScheduleController {
 

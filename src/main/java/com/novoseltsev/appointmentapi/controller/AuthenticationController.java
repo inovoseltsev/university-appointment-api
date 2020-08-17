@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/appointments/auth")
+@RequestMapping("api/v1/appointments-api/auth")
 public class AuthenticationController {
 
     @Autowired

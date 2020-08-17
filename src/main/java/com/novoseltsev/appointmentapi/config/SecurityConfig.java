@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,13 +18,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtConfigurer jwtConfigurer;
 
-    private static final String TEACHER_ENDPOINTS =
-            "/api/v1/appointments/users/teachers/**";
-    private static final String STUDENT_ENDPOINTS =
-            "/api/v1/appointments/users/students/**";
+    private static final String[] TEACHER_ENDPOINTS = new String[]{
+            "/api/v1/appointments-api/users/teachers/**",
+            "/api/v1/appointments-api/appointments/confirmation/**"};
+    private static final String[] STUDENT_ENDPOINTS = new String[]{
+            "/api/v1/appointments-api/users/students/**",
+            "/api/v1/appointments-api/appointments/creation",
+            "/api/v1/appointments-api/appointments/updating"};
     private static final String[] FREE_ENDPOINT =
-            new String[]{"/api/v1/appointments/auth/**",
-                    "/api/v1/appointments/users/registration"};
+            new String[]{"/api/v1/appointments-api/auth/**",
+                    "/api/v1/appointments-api/users/registration", "/test"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -43,6 +47,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigurer);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**");
     }
 
     @Bean

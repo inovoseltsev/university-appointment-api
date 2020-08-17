@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TeacherTimeValidator implements ConstraintValidator<TeacherTime, Integer> {
 
-    @Value(value = "${minimum.appointed.time}")
+    @Value("${minimum.appointed.time}")
     private Integer minimalTime;
 
     @Override

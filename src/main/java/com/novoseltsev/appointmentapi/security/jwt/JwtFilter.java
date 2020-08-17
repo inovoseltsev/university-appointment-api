@@ -25,7 +25,9 @@ public class JwtFilter extends GenericFilterBean {
     private JwtProvider jwtProvider;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(
+            ServletRequest request, ServletResponse response, FilterChain chain
+    ) throws IOException, ServletException {
         try {
             String token =
                     jwtProvider.resolveToken((HttpServletRequest) request);
@@ -37,7 +39,8 @@ public class JwtFilter extends GenericFilterBean {
             }
             chain.doFilter(request, response);
         } catch (JwtAuthenticationException | IllegalArgumentException e) {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            HttpServletResponse httpServletResponse =
+                    (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");

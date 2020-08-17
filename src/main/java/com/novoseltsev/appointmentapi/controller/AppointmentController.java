@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/appointments/users")
+@RequestMapping("api/v1/appointments-api/appointments")
 public class AppointmentController {
 
     @Autowired
     private AppointmentService appointmentService;
 
-    @GetMapping("/appointments/{id}")
+    @GetMapping("/{id}")
     public AppointmentDto getAppointmentById(@PathVariable Long id) {
         return AppointmentDto.from(appointmentService.findById(id));
     }
@@ -35,7 +35,7 @@ public class AppointmentController {
                 .map(AppointmentDto::from).collect(Collectors.toSet());
     }
 
-    @PostMapping("/students/appointments")
+    @PostMapping("/creation")
     public ResponseEntity<AppointmentDto> create(
             @Valid @RequestBody AppointmentDto appointmentDto
     ) {
@@ -43,7 +43,7 @@ public class AppointmentController {
                 .create(appointmentDto.toAppointment())), HttpStatus.CREATED);
     }
 
-    @PutMapping("/students/appointments")
+    @PutMapping("/updating")
     public AppointmentDto update(
             @Valid @RequestBody AppointmentDto appointmentDto
     ) {
@@ -51,22 +51,22 @@ public class AppointmentController {
                 .update(appointmentDto.toAppointment()));
     }
 
-    @PutMapping("/teachers/appointments/approve/{id}")
+    @PutMapping("/confirmation/{id}")
     public void approveAppointment(@PathVariable Long id) {
         appointmentService.approveAppointment(id);
     }
 
-    @PutMapping("/appointments/decline/{id}")
+    @PutMapping("/revocation/{id}")
     public void declineAppointment(@PathVariable Long id) {
         appointmentService.declineAppointment(id);
     }
 
-    @DeleteMapping("/appointments/{id}")
+    @DeleteMapping("/{id}")
     public void markAppointmentAsDeleted(@PathVariable Long id) {
         appointmentService.markAppointmentAsDeleted(id);
     }
 
-    @DeleteMapping("/appointments/deletion/{id}")
+    @DeleteMapping("/deletion/{id}")
     public ResponseEntity<HttpStatus> deleteAppointmentById(
             @PathVariable Long id
     ) {
