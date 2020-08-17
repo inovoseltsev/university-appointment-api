@@ -1,3 +1,4 @@
-To start my app properly you need to instal lombok plugin to your ide https://projectlombok.org/setup/intellij.
+To start my app properly you need to install lombok plugin to your ide https://projectlombok.org/setup/intellij.
+After, you need to go to application.properties file and set database settings up to yours.
 Next you need to go to the Application class in root of project and launch the main method.
 After that, app must work well.
