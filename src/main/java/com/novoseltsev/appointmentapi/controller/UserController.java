@@ -39,6 +39,11 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/activation/{activationCode}")
+    public void activateUser(@PathVariable String activationCode) {
+        userService.activateUserByActivationCode(activationCode);
+    }
+
     @PostMapping("/registration")
     public ResponseEntity<UserDto> create(
             @Valid @RequestBody RegistrationUserDto registrationDto

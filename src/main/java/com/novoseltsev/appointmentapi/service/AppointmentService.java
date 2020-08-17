@@ -1,6 +1,7 @@
 package com.novoseltsev.appointmentapi.service;
 
 import com.novoseltsev.appointmentapi.domain.entity.Appointment;
+import com.novoseltsev.appointmentapi.domain.status.AppointmentStatus;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ public interface AppointmentService {
 
     Appointment update(Appointment updatedAppointment);
 
-    void approveAppointment(Long appointmentId);
+    void changeAppointmentStatus(Long appointmentId, AppointmentStatus status);
 
-    void declineAppointment(Long appointmentId);
+    void changeAppointmentStatusByCode(Long appointmentId,
+                                   AppointmentStatus status, String code);
 
     void markAppointmentAsDeleted(Long appointmentId);
 

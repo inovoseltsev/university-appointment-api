@@ -1,12 +1,15 @@
 package com.novoseltsev.appointmentapi.service.impl;
 
 import com.novoseltsev.appointmentapi.domain.entity.User;
+import com.novoseltsev.appointmentapi.domain.entity.UuidUserInfo;
 import com.novoseltsev.appointmentapi.domain.status.UserStatus;
 import com.novoseltsev.appointmentapi.exception.user.RegistrationUserException;
 import com.novoseltsev.appointmentapi.exception.user.UserNotFoundException;
 import com.novoseltsev.appointmentapi.exception.user.UserPasswordUpdateException;
 import com.novoseltsev.appointmentapi.repository.UserRepository;
+import com.novoseltsev.appointmentapi.service.MailSenderService;
 import com.novoseltsev.appointmentapi.service.UserService;
+import com.novoseltsev.appointmentapi.service.UuidUserInfoService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,13 +25,21 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UuidUserInfoService uuidUserInfoService;
+
+    @Autowired
+    private MailSenderService mailSenderService;
+
     @Override
     @Transactional
     public User create(User user) {
         checkLoginAndEmailUniqueness(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setStatus(UserStatus.ACTIVE);
-        return userRepository.save(user);
+        user.setStatus(UserStatus.NOT_ACTIVE);
+        User savedUser = userRepository.save(user);
+        sendActivationMessageToUser(user);
+        return savedUser;
     }
 
     @Override
@@ -90,6 +101,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void activateUserByActivationCode(String uuid) {
+        UuidUserInfo uuidUserInfo =
+                uuidUserInfoService.findByUuid(uuid);
+        if (uuidUserInfo != null) {
+            User user = findById(uuidUserInfo.getUserId());
+            user.setStatus(UserStatus.ACTIVE);
+            userRepository.save(user);
+            uuidUserInfoService.delete(uuidUserInfo);
+        }
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public User findByEmail(String email) {
         return userRepository.findUserByEmail(email)
@@ -107,5 +131,21 @@ public class UserServiceImpl implements UserService {
                 throw new RegistrationUserException("email");
             }
         });
+    }
+
+    private void sendActivationMessageToUser(User user) {
+        UuidUserInfo uuidUserInfo =
+                uuidUserInfoService.create(user.getId());
+        String message = String.format("Hello %s %s!"
+                        + System.lineSeparator() + "Please activate your"
+                        + "account by visiting this link: "
+                        + System.lineSeparator()
+                        + "http://localhost:8080/api/v1/appointments-api"
+                        + "/users/activation/%s",
+                user.getFirstName(),
+                user.getLastName(),
+                uuidUserInfo.getUuid());
+        mailSenderService.sendMessage(user.getEmail(), "Account "
+                + "activation", message);
     }
 }

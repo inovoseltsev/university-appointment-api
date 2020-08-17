@@ -1,6 +1,7 @@
 package com.novoseltsev.appointmentapi.controller;
 
 import com.novoseltsev.appointmentapi.domain.dto.AppointmentDto;
+import com.novoseltsev.appointmentapi.domain.status.AppointmentStatus;
 import com.novoseltsev.appointmentapi.service.AppointmentService;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,6 +36,30 @@ public class AppointmentController {
                 .map(AppointmentDto::from).collect(Collectors.toSet());
     }
 
+    @GetMapping("/confirmation/code/{code}/{appointmentId}")
+    public void approveAppointmentByCode(
+            @PathVariable String code,
+            @PathVariable Long appointmentId) {
+        appointmentService.changeAppointmentStatusByCode(appointmentId,
+                AppointmentStatus.APPROVED, code);
+    }
+
+    @GetMapping("/revocation/code/{code}/{appointmentId}")
+    public void declineAppointmentByCode(
+            @PathVariable String code,
+            @PathVariable Long appointmentId) {
+        appointmentService.changeAppointmentStatusByCode(appointmentId,
+                AppointmentStatus.DECLINED, code);
+    }
+
+    @GetMapping("/cancel-reservation/code/{code}/{appointmentId}")
+    public void cancelReservationByCode(
+            @PathVariable String code,
+            @PathVariable Long appointmentId) {
+        appointmentService.changeAppointmentStatusByCode(appointmentId,
+                AppointmentStatus.CANCELED, code);
+    }
+
     @PostMapping("/creation")
     public ResponseEntity<AppointmentDto> create(
             @Valid @RequestBody AppointmentDto appointmentDto
@@ -53,12 +78,20 @@ public class AppointmentController {
 
     @PutMapping("/confirmation/{id}")
     public void approveAppointment(@PathVariable Long id) {
-        appointmentService.approveAppointment(id);
+        appointmentService.changeAppointmentStatus(id,
+                AppointmentStatus.APPROVED);
     }
 
     @PutMapping("/revocation/{id}")
     public void declineAppointment(@PathVariable Long id) {
-        appointmentService.declineAppointment(id);
+        appointmentService.changeAppointmentStatus(id,
+                AppointmentStatus.DECLINED);
+    }
+
+    @PutMapping("/cancel-reservation/{id}")
+    public void cancelReservation(@PathVariable Long id) {
+        appointmentService.changeAppointmentStatus(id,
+                AppointmentStatus.CANCELED);
     }
 
     @DeleteMapping("/{id}")

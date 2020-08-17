@@ -20,14 +20,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] TEACHER_ENDPOINTS = new String[]{
             "/api/v1/appointments-api/users/teachers/**",
-            "/api/v1/appointments-api/appointments/confirmation/**"};
+            "/api/v1/appointments-api/appointments/confirmation/**",
+            "/api/v1/appointments-api/appointments/revocation/**"};
     private static final String[] STUDENT_ENDPOINTS = new String[]{
             "/api/v1/appointments-api/users/students/**",
             "/api/v1/appointments-api/appointments/creation",
-            "/api/v1/appointments-api/appointments/updating"};
-    private static final String[] FREE_ENDPOINT =
-            new String[]{"/api/v1/appointments-api/auth/**",
-                    "/api/v1/appointments-api/users/registration", "/test"};
+            "/api/v1/appointments-api/appointments/updating",
+            "/api/v1/appointments-api/appointments/cancel-reservation/**"};
+    private static final String[] FREE_ENDPOINT = new String[]{
+            "/api/v1/appointments-api/auth/**",
+            "/api/v1/appointments-api/users/registration",
+            "/api/v1/appointments-api/users/activation/**",
+            "/api/v1/appointments-api/appointments/cancel-reservation/code/**",
+            "/api/v1/appointments-api/appointments/confirmation/code/**",
+            "/api/v1/appointments-api/appointments/revocation/code/**"};
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
