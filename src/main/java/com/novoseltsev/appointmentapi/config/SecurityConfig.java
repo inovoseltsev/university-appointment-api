@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/v1/appointments-api/appointments/creation",
             "/api/v1/appointments-api/appointments/updating",
             "/api/v1/appointments-api/appointments/cancel-reservation/**"};
-    private static final String[] FREE_ENDPOINT = new String[]{
+    private static final String[] FREE_ENDPOINTS = new String[]{
             "/api/v1/appointments-api/auth/**",
             "/api/v1/appointments-api/users/registration",
             "/api/v1/appointments-api/users/activation/**",
@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(FREE_ENDPOINT).permitAll()
+                .antMatchers(FREE_ENDPOINTS).permitAll()
                 .antMatchers(TEACHER_ENDPOINTS).hasAuthority("TEACHER")
                 .antMatchers(STUDENT_ENDPOINTS).hasAuthority("STUDENT")
                 .anyRequest().authenticated()

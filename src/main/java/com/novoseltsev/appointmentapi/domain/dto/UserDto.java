@@ -2,7 +2,6 @@ package com.novoseltsev.appointmentapi.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.novoseltsev.appointmentapi.domain.entity.User;
-import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -29,7 +28,6 @@ public class UserDto {
     @Min(value = 1)
     private Long id;
 
-    @Column(nullable = false)
     @NotBlank(message = FIRST_NAME_ERROR)
     @Pattern(regexp = NAME_PATTERN, message = FIRST_NAME_ERROR)
     private String firstName;
