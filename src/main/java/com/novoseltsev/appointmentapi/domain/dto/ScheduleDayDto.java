@@ -25,11 +25,9 @@ public class ScheduleDayDto {
     @NotBlank
     private String openTimeEnd;
 
-    private static final SimpleDateFormat DATE_FORMAT =
-            new SimpleDateFormat("dd-MM-yyyy k:mm");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy k:mm");
 
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     public ScheduleDay toScheduleDay() {
         LocalDateTime startDate = LocalDateTime.parse(openTimeStart, FORMATTER);

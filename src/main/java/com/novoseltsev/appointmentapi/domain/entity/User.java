@@ -72,8 +72,7 @@ public class User extends AbstractEntity {
     @Column(length = 25, nullable = false)
     private UserRole role;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade =
-            CascadeType.ALL)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(unique = true)
     @ToString.Exclude
     private TeacherDetails teacherDetails;
@@ -91,8 +90,7 @@ public class User extends AbstractEntity {
         appointment.getUsers().remove(this);
     }
 
-    public User(String firstName, String lastName, String login, String email,
-                String password) {
+    public User(String firstName, String lastName, String login, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;

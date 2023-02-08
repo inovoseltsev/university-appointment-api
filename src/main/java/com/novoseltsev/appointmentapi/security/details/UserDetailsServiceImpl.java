@@ -19,8 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User loadedUser = userService.findByLogin(login);
         if (loadedUser == null) {
-            throw new UsernameNotFoundException("User with login: " + login
-                    + " not found!");
+            throw new UsernameNotFoundException("User with login: " + login + " not found!");
         }
         return new JwtUser(loadedUser);
     }

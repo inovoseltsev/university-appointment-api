@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleDay createDay(ScheduleDay scheduleDay, Long teacherId) {
         scheduleDay.setId(0L);
         checkTimeValidity(Collections.singletonList(scheduleDay));
-        checkDaysTimeIntervalIntersection(Collections
-                        .singletonList(scheduleDay),
-                findTeacherScheduleDays(teacherId));
+        List<ScheduleDay> teacherScheduleDays = findTeacherScheduleDays(teacherId);
+        checkDaysTimeIntervalIntersection(Collections.singletonList(scheduleDay), teacherScheduleDays);
         teacherDetailsService.addDayToSchedule(scheduleDay, teacherId);
         return scheduleRepository.save(scheduleDay);
     }
@@ -49,10 +49,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void createAll(List<ScheduleDay> days, Long teacherId) {
         days.forEach(day -> day.setId(0L));
         checkTimeValidity(days);
-        checkDaysTimeIntervalIntersection(days,
-                findTeacherScheduleDays(teacherId));
-        days.forEach(day -> teacherDetailsService.addDayToSchedule(day,
-                teacherId));
+        List<ScheduleDay> teacherScheduleDays = findTeacherScheduleDays(teacherId);
+        checkDaysTimeIntervalIntersection(days, teacherScheduleDays);
+        days.forEach(day -> teacherDetailsService.addDayToSchedule(day, teacherId));
         scheduleRepository.saveAll(days);
     }
 
@@ -68,13 +67,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     @Transactional
-    public void updateAllTeacherDays(
-            Queue<ScheduleDay> updatedDays,
-            Long teacherId
-    ) {
+    public void updateAllTeacherDays(Queue<ScheduleDay> updatedDays, Long teacherId) {
         checkTimeValidity(updatedDays);
         List<ScheduleDay> savedDays = findAllByIdList(updatedDays.stream()
-                .map(ScheduleDay::getId).collect(Collectors.toList()));
+            .map(ScheduleDay::getId)
+            .collect(Collectors.toList()));
         List<ScheduleDay> teacherSchedule = findTeacherScheduleDays(teacherId);
         if (!teacherSchedule.containsAll(savedDays)) {
             throw new DayNotFoundException("Teacher doesn't have such days");
@@ -82,7 +79,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         checkDaysTimeIntervalIntersection(updatedDays, teacherSchedule);
         savedDays.forEach(savedDay -> {
             ScheduleDay updatedDay = updatedDays.poll();
-            if (updatedDay != null) {
+            if (Objects.nonNull(updatedDay)) {
                 savedDay.setOpenTimeStart(updatedDay.getOpenTimeStart());
                 savedDay.setOpenTimeEnd(updatedDay.getOpenTimeEnd());
             }
@@ -105,15 +102,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     @Transactional(readOnly = true)
     public ScheduleDay findById(Long id) {
-        return scheduleRepository.findById(id)
-                .orElseThrow(DayNotFoundException::new);
+        return scheduleRepository.findById(id).orElseThrow(DayNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ScheduleDay> findAllByIdList(List<Long> scheduleDayIdList) {
-        List<ScheduleDay> days = (List<ScheduleDay>) scheduleRepository
-                .findAllById(scheduleDayIdList);
+        List<ScheduleDay> days = (List<ScheduleDay>) scheduleRepository.findAllById(scheduleDayIdList);
         if (days.size() != scheduleDayIdList.size()) {
             throw new DayNotFoundException();
         }
@@ -126,35 +121,27 @@ public class ScheduleServiceImpl implements ScheduleService {
         User user = userService.findById(teacherId);
         TeacherDetails teacherDetails = user.getTeacherDetails();
         if (teacherDetails == null) {
-            throw new TeacherDetailsNotExistException("Teacher details are "
-                    + "not exist");
+            throw new TeacherDetailsNotExistException("Teacher details are not exist");
         }
         return teacherDetails.getSchedule();
     }
 
     private void checkTimeValidity(Collection<ScheduleDay> days) {
         days.forEach(day -> {
-            if (day.getOpenTimeEnd().before(day.getOpenTimeStart())
-                    || day.getOpenTimeEnd().equals(day.getOpenTimeStart())) {
-                throw new StartEndTimeException("End date less than start "
-                        + "date");
+            if (day.getOpenTimeEnd().before(day.getOpenTimeStart()) || day.getOpenTimeEnd().equals(day.getOpenTimeStart())) {
+                throw new StartEndTimeException("End date less than start date");
             }
         });
     }
 
-    private void checkDaysTimeIntervalIntersection(
-            Collection<ScheduleDay> days,
-            Collection<ScheduleDay> teacherSchedule
-    ) {
+    private void checkDaysTimeIntervalIntersection(Collection<ScheduleDay> days, Collection<ScheduleDay> teacherSchedule) {
         days.forEach(day -> teacherSchedule.forEach(teacherDay -> {
             if (!teacherSchedule.isEmpty()) {
                 if (!day.getId().equals(teacherDay.getId())) {
                     Date startTime = teacherDay.getOpenTimeStart();
                     Date endTime = teacherDay.getOpenTimeEnd();
-                    if (day.getOpenTimeStart().before(endTime) &&
-                            day.getOpenTimeEnd().after(startTime)) {
-                        throw new IncorrectTimeIntervalException("Open "
-                                + "day time intersects with existed");
+                    if (day.getOpenTimeStart().before(endTime) && day.getOpenTimeEnd().after(startTime)) {
+                        throw new IncorrectTimeIntervalException("Open day time intersects with existed");
                     }
                 }
             }

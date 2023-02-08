@@ -43,9 +43,11 @@ public class Appointment extends AbstractEntity {
     @NotNull
     @ToString.Exclude
     @ManyToMany
-    @JoinTable(name = "usr_appointment", joinColumns = @JoinColumn(name =
-            "appointment_id", nullable = false), inverseJoinColumns =
-    @JoinColumn(name = "user_id", nullable = false))
+    @JoinTable(
+        name = "usr_appointment",
+        joinColumns = @JoinColumn(name = "appointment_id", nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "user_id", nullable = false)
+    )
     private Set<User> users = new HashSet<>();
 
     @Column(length = 25, nullable = false)

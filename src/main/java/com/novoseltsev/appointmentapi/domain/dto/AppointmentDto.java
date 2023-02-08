@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -48,12 +50,15 @@ public class AppointmentDto {
         LocalDateTime end = LocalDateTime.parse(endDate, FORMATTER);
         appointment.setStartTime(Timestamp.valueOf(start));
         appointment.setEndTime(Timestamp.valueOf(end));
+
         User student = new User();
         student.setId(studentId);
         student.setRole(UserRole.STUDENT);
+
         User teacher = new User();
         teacher.setId(teacherId);
         teacher.setRole(UserRole.TEACHER);
+
         appointment.setUsers(student, teacher);
         return appointment;
     }
@@ -63,10 +68,11 @@ public class AppointmentDto {
         appointmentDto.setId(appointment.getId());
         appointmentDto.setStartDate(DATE_FORMAT.format(appointment.getStartTime()));
         appointmentDto.setEndDate(DATE_FORMAT.format(appointment.getEndTime()));
-        appointmentDto.setStudentId(((User) appointment.getUsers()
-                .toArray()[0]).getId());
-        appointmentDto.setTeacherId(((User) appointment.getUsers()
-                .toArray()[1]).getId());
+
+        List<User> users = new ArrayList<>(appointment.getUsers());
+        appointmentDto.setStudentId(users.get(0).getId());
+        appointmentDto.setTeacherId(users.get(1).getId());
+
         return appointmentDto;
     }
 }

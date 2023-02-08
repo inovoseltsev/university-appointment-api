@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Autowired
     private MailSenderService mailSenderService;
 
+    @Value("${server.base.url}")
+    private String serverBaseUrl;
+
+    @Value("${server.servlet.context-path}")
+    private String contextPath;
+
     @Override
     @Transactional
     public Appointment create(Appointment appointment) {
@@ -55,10 +62,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public Appointment update(Appointment updatedAppointment) {
-        User student = getUserByRoleFromAppointment(updatedAppointment,
-                UserRole.STUDENT);
-        User teacher = getUserByRoleFromAppointment(updatedAppointment,
-                UserRole.TEACHER);
+        User student = getUserByRoleFromAppointment(updatedAppointment, UserRole.STUDENT);
+        User teacher = getUserByRoleFromAppointment(updatedAppointment, UserRole.TEACHER);
         checkAppointmentValidity(updatedAppointment, student, teacher);
         Appointment savedAppointment = findById(updatedAppointment.getId());
         savedAppointment.setStartTime(updatedAppointment.getStartTime());
@@ -165,10 +170,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private String getStudentMessage(String uuid, Long appointmentId) {
         return String.format(
-                "You have just reserved an appointment, to cancel reservation"
-                        + "visit this link:" + System.lineSeparator()
-                        + "http://localhost:8080/api/v1/appointments-api/"
-                        + "appointments/cancel-reservation/code/%s/%s", uuid, appointmentId
+            "You have just reserved an appointment, to cancel reservation"
+                + "visit this link:" + System.lineSeparator() + serverBaseUrl + contextPath
+                + "appointments/cancel-reservation/code/%s/%s",
+            uuid,
+            appointmentId
         );
     }
 
@@ -178,15 +184,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         String appointmentDay = dayMonthFormat.format(appointment.getStartTime());
         String appointmentStart = hoursFormat.format(appointment.getStartTime());
         String appointmentEnd = hoursFormat.format(appointment.getEndTime());
+
         String teacherMessage = "Student %s %s, has just created appointment "
-            + "with you %s at %s - %s. To approve meeting visit "
-            + "this link:" + System.lineSeparator()
-            + "http://localhost:8080/api/v1/appointments-api/"
-            + "appointments/confirmation/code/%s/%s"
-            + System.lineSeparator()
-            + "To decline visit this:" + System.lineSeparator()
-            + "http://localhost:8080/api/v1/appointments-api/"
-            + "appointments/revocation/code/%s/%s";
+            + "with you %s at %s - %s. To approve meeting visit this link:" + System.lineSeparator()
+            + serverBaseUrl + contextPath + "appointments/confirmation/code/%s/%s"
+            + System.lineSeparator() + "To decline visit this:" + System.lineSeparator()
+            + serverBaseUrl + contextPath + "appointments/revocation/code/%s/%s";
+
         return String.format(
             teacherMessage,
             student.getFirstName(),

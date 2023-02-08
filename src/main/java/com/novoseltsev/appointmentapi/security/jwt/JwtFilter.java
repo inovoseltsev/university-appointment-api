@@ -25,12 +25,9 @@ public class JwtFilter extends GenericFilterBean {
     private JwtProvider jwtProvider;
 
     @Override
-    public void doFilter(
-            ServletRequest request, ServletResponse response, FilterChain chain
-    ) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
-            String token =
-                    jwtProvider.resolveToken((HttpServletRequest) request);
+            String token = jwtProvider.resolveToken((HttpServletRequest) request);
             if (token != null && jwtProvider.isValid(token)) {
                 Authentication auth = jwtProvider.getAuthentication(token);
                 if (auth != null) {
@@ -39,15 +36,15 @@ public class JwtFilter extends GenericFilterBean {
             }
             chain.doFilter(request, response);
         } catch (JwtAuthenticationException | IllegalArgumentException e) {
-            HttpServletResponse httpServletResponse =
-                    (HttpServletResponse) response;
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
-            httpServletResponse.getWriter().write(new ObjectMapper()
-                    .writeValueAsString(error));
+
+            httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(error));
             httpServletResponse.getWriter().flush();
             httpServletResponse.getWriter().close();
         }
