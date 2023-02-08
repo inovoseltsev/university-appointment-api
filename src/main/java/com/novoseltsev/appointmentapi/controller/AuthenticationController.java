@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/appointments-api/auth")
+@RequestMapping("auth")
 public class AuthenticationController {
 
     @Autowired
@@ -27,13 +27,11 @@ public class AuthenticationController {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public Map<Object, Object> login(@Valid @RequestBody AuthenticationDto authDto) {
-        return authenticationService
-                .authenticate(authDto.getLogin(), authDto.getPassword());
+        return authenticationService.authenticate(authDto.getLogin(), authDto.getPassword());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({UserNotFoundException.class,
-            JwtAuthenticationException.class})
+    @ExceptionHandler({UserNotFoundException.class, JwtAuthenticationException.class})
     private Map<String, String> handleInvalidCredentials() {
         Map<String, String> error = new HashMap<>();
         error.put("error", "Login or password is not correct");

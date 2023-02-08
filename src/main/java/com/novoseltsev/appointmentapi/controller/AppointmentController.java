@@ -1,6 +1,7 @@
 package com.novoseltsev.appointmentapi.controller;
 
 import com.novoseltsev.appointmentapi.domain.dto.AppointmentDto;
+import com.novoseltsev.appointmentapi.domain.entity.Appointment;
 import com.novoseltsev.appointmentapi.domain.status.AppointmentStatus;
 import com.novoseltsev.appointmentapi.service.AppointmentService;
 import java.util.Set;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/appointments-api/appointments")
+@RequestMapping("appointments")
 public class AppointmentController {
 
     @Autowired
@@ -33,65 +34,51 @@ public class AppointmentController {
     @GetMapping("/user-appointments/{userId}")
     public Set<AppointmentDto> getUserAppointments(@PathVariable Long userId) {
         return appointmentService.findUserAppointments(userId).stream()
-                .map(AppointmentDto::from).collect(Collectors.toSet());
+            .map(AppointmentDto::from)
+            .collect(Collectors.toSet());
     }
 
     @GetMapping("/confirmation/code/{code}/{appointmentId}")
-    public void approveAppointmentByCode(
-            @PathVariable String code,
-            @PathVariable Long appointmentId) {
-        appointmentService.changeAppointmentStatusByCode(appointmentId,
-                AppointmentStatus.APPROVED, code);
+    public void approveAppointmentByCode(@PathVariable String code, @PathVariable Long appointmentId) {
+        appointmentService.changeAppointmentStatusByCode(appointmentId, AppointmentStatus.APPROVED, code);
     }
 
     @GetMapping("/revocation/code/{code}/{appointmentId}")
-    public void declineAppointmentByCode(
-            @PathVariable String code,
-            @PathVariable Long appointmentId) {
+    public void declineAppointmentByCode(@PathVariable String code, @PathVariable Long appointmentId) {
         appointmentService.changeAppointmentStatusByCode(appointmentId,
                 AppointmentStatus.DECLINED, code);
     }
 
     @GetMapping("/cancel-reservation/code/{code}/{appointmentId}")
-    public void cancelReservationByCode(
-            @PathVariable String code,
-            @PathVariable Long appointmentId) {
-        appointmentService.changeAppointmentStatusByCode(appointmentId,
-                AppointmentStatus.CANCELED, code);
+    public void cancelReservationByCode(@PathVariable String code, @PathVariable Long appointmentId) {
+        appointmentService.changeAppointmentStatusByCode(appointmentId, AppointmentStatus.CANCELED, code);
     }
 
     @PostMapping("/creation")
-    public ResponseEntity<AppointmentDto> create(
-            @Valid @RequestBody AppointmentDto appointmentDto
-    ) {
-        return new ResponseEntity<>(AppointmentDto.from(appointmentService
-                .create(appointmentDto.toAppointment())), HttpStatus.CREATED);
+    public ResponseEntity<AppointmentDto> create(@Valid @RequestBody AppointmentDto appointmentDto) {
+        Appointment createdAppointment = appointmentService.create(appointmentDto.toAppointment());
+        return new ResponseEntity<>(AppointmentDto.from(createdAppointment), HttpStatus.CREATED);
     }
 
     @PutMapping("/updating")
-    public AppointmentDto update(
-            @Valid @RequestBody AppointmentDto appointmentDto
-    ) {
-        return AppointmentDto.from(appointmentService
-                .update(appointmentDto.toAppointment()));
+    public AppointmentDto update(@Valid @RequestBody AppointmentDto appointmentDto) {
+        Appointment updatedAppointment = appointmentService.update(appointmentDto.toAppointment());
+        return AppointmentDto.from(updatedAppointment);
     }
 
     @PutMapping("/confirmation/{id}")
     public void approveAppointment(@PathVariable Long id) {
-        appointmentService.changeAppointmentStatus(id,
-                AppointmentStatus.APPROVED);
+        appointmentService.changeAppointmentStatus(id, AppointmentStatus.APPROVED);
     }
 
     @PutMapping("/revocation/{id}")
     public void declineAppointment(@PathVariable Long id) {
-        appointmentService.changeAppointmentStatus(id,
-                AppointmentStatus.DECLINED);
+        appointmentService.changeAppointmentStatus(id, AppointmentStatus.DECLINED);
     }
 
     @PutMapping("/cancel-reservation/{id}")
     public void cancelReservation(@PathVariable Long id) {
-        appointmentService.changeAppointmentStatus(id,
-                AppointmentStatus.CANCELED);
+        appointmentService.changeAppointmentStatus(id, AppointmentStatus.CANCELED);
     }
 
     @DeleteMapping("/{id}")
@@ -100,9 +87,7 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/deletion/{id}")
-    public ResponseEntity<HttpStatus> deleteAppointmentById(
-            @PathVariable Long id
-    ) {
+    public ResponseEntity<HttpStatus> deleteAppointmentById(@PathVariable Long id) {
         appointmentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -39,8 +39,7 @@ public class PriceServiceImpl implements PriceService {
     @Override
     @Transactional
     public void createAll(List<Price> prices, Long teacherId) {
-        prices.forEach(price -> teacherDetailsService
-                .addPriceToPriceList(price, teacherId));
+        prices.forEach(price -> teacherDetailsService.addPriceToPriceList(price, teacherId));
         priceRepository.saveAll(prices);
     }
 
@@ -57,7 +56,8 @@ public class PriceServiceImpl implements PriceService {
     @Transactional
     public void updateAll(Queue<Price> updatedPriceList) {
         List<Price> savedPrices = findAllByIdList(updatedPriceList.stream()
-                .map(AbstractEntity::getId).collect(Collectors.toList()));
+            .map(AbstractEntity::getId)
+            .collect(Collectors.toList()));
         savedPrices.forEach(price -> {
             Price queuePrice = updatedPriceList.poll();
             if (queuePrice != null) {
@@ -83,15 +83,13 @@ public class PriceServiceImpl implements PriceService {
     @Override
     @Transactional(readOnly = true)
     public Price findById(Long id) {
-        return priceRepository.findById(id)
-                .orElseThrow(PriceNotFoundException::new);
+        return priceRepository.findById(id).orElseThrow(PriceNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Price> findAllByIdList(List<Long> priceIdList) {
-        List<Price> prices =
-                (List<Price>) priceRepository.findAllById(priceIdList);
+        List<Price> prices = (List<Price>) priceRepository.findAllById(priceIdList);
         if (prices.size() != priceIdList.size()) {
             throw new PriceNotFoundException();
         }
@@ -104,8 +102,7 @@ public class PriceServiceImpl implements PriceService {
         User user = userService.findById(teacherId);
         TeacherDetails teacherDetails = user.getTeacherDetails();
         if (teacherDetails == null) {
-            throw new TeacherDetailsNotExistException("Teacher details are "
-                    + "not exist");
+            throw new TeacherDetailsNotExistException("Teacher details are not exist");
         }
         return teacherDetails.getPriceList();
     }

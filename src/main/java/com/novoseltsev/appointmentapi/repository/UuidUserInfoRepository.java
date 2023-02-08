@@ -5,7 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UuidUserInfoRepository extends CrudRepository<UuidUserInfo,
-        Long> {
+public interface UuidUserInfoRepository extends CrudRepository<UuidUserInfo, Long> {
     UuidUserInfo findByUuid(String uuid);
 }

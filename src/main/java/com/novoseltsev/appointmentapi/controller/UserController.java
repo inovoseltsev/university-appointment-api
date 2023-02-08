@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("api/v1/appointments-api/users")
+@RequestMapping("users")
 public class UserController {
 
     @Autowired
@@ -35,8 +35,9 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getUsers() {
-        return userService.findAll().stream().map(UserDto::fromUser)
-                .collect(Collectors.toList());
+        return userService.findAll().stream()
+            .map(UserDto::fromUser)
+            .collect(Collectors.toList());
     }
 
     @GetMapping("/activation/{activationCode}")
@@ -45,12 +46,9 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<UserDto> create(
-            @Valid @RequestBody RegistrationUserDto registrationDto
-    ) {
+    public ResponseEntity<UserDto> create(@Valid @RequestBody RegistrationUserDto registrationDto) {
         User user = userService.create(registrationDto.toUser());
-        return new ResponseEntity<>(UserDto.fromUser(user),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping
@@ -59,12 +57,8 @@ public class UserController {
     }
 
     @PutMapping("/password/{id}")
-    public void updatePassword(
-            @Valid @RequestBody UserPasswordDto passwordDto,
-            @PathVariable Long id
-    ) {
-        userService.updatePassword(id, passwordDto.getOldPassword(),
-                passwordDto.getNewPassword());
+    public void updatePassword(@Valid @RequestBody UserPasswordDto passwordDto, @PathVariable Long id) {
+        userService.updatePassword(id, passwordDto.getOldPassword(), passwordDto.getNewPassword());
     }
 
     @DeleteMapping("/{id}")
