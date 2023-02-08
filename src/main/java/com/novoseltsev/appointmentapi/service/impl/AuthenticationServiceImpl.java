@@ -34,10 +34,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new JwtAuthenticationException("");
         }
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(login, password));
-        String token = jwtProvider.createToken(String.valueOf(user.getId()),
-                user.getRole());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
+        String token = jwtProvider.createToken(String.valueOf(user.getId()), user.getRole());
         Map<Object, Object> tokenResponse = new HashMap<>();
         tokenResponse.put("token", token);
         return tokenResponse;

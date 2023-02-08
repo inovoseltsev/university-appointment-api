@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/appointments-api/users/teachers/prices")
+@RequestMapping("users/teachers/prices")
 @Validated
 public class PriceController {
 
@@ -37,26 +37,20 @@ public class PriceController {
     @GetMapping("/teacher-prices/{teacherId}")
     public List<PriceDto> getTeacherPriceList(@PathVariable Long teacherId) {
         return priceService.findAllTeacherPrices(teacherId).stream()
-                .map(PriceDto::fromPrice).collect(Collectors.toList());
+            .map(PriceDto::fromPrice)
+            .collect(Collectors.toList());
     }
 
     @PostMapping("/teacher/{teacherId}")
-    public ResponseEntity<PriceDto> createPriceForTeacher(
-            @Valid @RequestBody PriceDto priceDto,
-            @PathVariable Long teacherId
-    ) {
+    public ResponseEntity<PriceDto> createPriceForTeacher(@Valid @RequestBody PriceDto priceDto, @PathVariable Long teacherId) {
         Price createdPrice = priceService.create(priceDto.toPrice(), teacherId);
-        return new ResponseEntity<>(PriceDto.fromPrice(createdPrice),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(PriceDto.fromPrice(createdPrice), HttpStatus.CREATED);
     }
 
     @PostMapping("/teacher-prices/{teacherId}")
-    public ResponseEntity<HttpStatus> createPricesForTeacher(
-            @RequestBody List<@Valid PriceDto> prices,
-            @PathVariable Long teacherId
-    ) {
-        priceService.createAll(prices.stream().map(PriceDto::toPrice)
-                        .collect(Collectors.toList()), teacherId);
+    public ResponseEntity<HttpStatus> createPricesForTeacher(@RequestBody List<@Valid PriceDto> prices, @PathVariable Long teacherId) {
+        List<Price> pricesToCreate = prices.stream().map(PriceDto::toPrice).collect(Collectors.toList());
+        priceService.createAll(pricesToCreate, teacherId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -67,8 +61,10 @@ public class PriceController {
 
     @PutMapping("/teacher-prices")
     public void updatePrices(@RequestBody Queue<@Valid PriceDto> pricesDto) {
-        priceService.updateAll(pricesDto.stream().map(PriceDto::toPrice)
-                .collect(Collectors.toCollection(LinkedList::new)));
+        Queue<Price> pricesToUpdate = pricesDto.stream()
+            .map(PriceDto::toPrice)
+            .collect(Collectors.toCollection(LinkedList::new));
+        priceService.updateAll(pricesToUpdate);
     }
 
     @DeleteMapping("/{id}")

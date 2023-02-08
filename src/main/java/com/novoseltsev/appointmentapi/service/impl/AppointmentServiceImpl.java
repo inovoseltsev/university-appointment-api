@@ -42,10 +42,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional
     public Appointment create(Appointment appointment) {
-        User student = getUserByRoleFromAppointment(appointment,
-                UserRole.STUDENT);
-        User teacher = getUserByRoleFromAppointment(appointment,
-                UserRole.TEACHER);
+        User student = getUserByRoleFromAppointment(appointment, UserRole.STUDENT);
+        User teacher = getUserByRoleFromAppointment(appointment, UserRole.TEACHER);
         checkAppointmentValidity(appointment, student, teacher);
         student.addAppointment(appointment);
         teacher.addAppointment(appointment);
@@ -70,9 +68,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void changeAppointmentStatus(Long appointmentId,
-                                        AppointmentStatus status
-    ) {
+    public void changeAppointmentStatus(Long appointmentId, AppointmentStatus status) {
         Appointment appointment = findById(appointmentId);
         appointment.setStatus(status);
         appointmentRepository.save(appointment);
@@ -80,9 +76,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     @Transactional
-    public void changeAppointmentStatusByCode(
-            Long appointmentId, AppointmentStatus status, String code
-    ) {
+    public void changeAppointmentStatusByCode(Long appointmentId, AppointmentStatus status, String code) {
         UuidUserInfo uuidUserInfo = uuidUserInfoService.findByUuid(code);
         if (uuidUserInfo != null) {
             changeAppointmentStatus(appointmentId, status);
@@ -105,45 +99,34 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional(readOnly = true)
     public Appointment findById(Long id) {
-        return appointmentRepository.findById(id)
-                .orElseThrow(AppointmentNotFoundException::new);
+        return appointmentRepository.findById(id).orElseThrow(AppointmentNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Set<Appointment> findUserAppointments(Long userId) {
-        Set<Appointment> userAppointments =
-                userService.findById(userId).getAppointments();
+        Set<Appointment> userAppointments = userService.findById(userId).getAppointments();
         return userAppointments.stream()
-                .filter(appointment -> !appointment.getStatus()
-                        .equals(AppointmentStatus.DELETED))
+                .filter(appointment -> !appointment.getStatus().equals(AppointmentStatus.DELETED))
                 .collect(Collectors.toSet());
     }
 
-    private void checkAppointmentValidity(
-            Appointment newAppointment, User student, User teacher
-    ) {
+    private void checkAppointmentValidity(Appointment newAppointment, User student, User teacher) {
         checkAppointmentTimeValidity(newAppointment);
         checkAppointmentUsersForRoleMatching(student, teacher);
         checkUserTimeIntervalIntersection(student, newAppointment);
         checkUserTimeIntervalIntersection(teacher, newAppointment);
     }
 
-    private void checkUserTimeIntervalIntersection(
-            User user, Appointment appointment
-    ) {
+    private void checkUserTimeIntervalIntersection(User user, Appointment appointment) {
         Set<Appointment> userAppointments = user.getAppointments();
         if (!userAppointments.isEmpty()) {
             userAppointments.forEach(userAppointment -> {
-                if (!userAppointment.getId().equals(appointment.getId())
-                        && !userAppointment.getStatus()
-                        .equals(AppointmentStatus.DELETED)) {
+                if (!userAppointment.getId().equals(appointment.getId()) && !userAppointment.getStatus().equals(AppointmentStatus.DELETED)) {
                     Date startTime = userAppointment.getStartTime();
                     Date endTime = userAppointment.getEndTime();
-                    if (appointment.getStartTime().before(endTime)
-                            && appointment.getEndTime().after(startTime)) {
-                        throw new IncorrectTimeIntervalException(
-                                "Appointment time intersects with existed!");
+                    if (appointment.getStartTime().before(endTime) && appointment.getEndTime().after(startTime)) {
+                        throw new IncorrectTimeIntervalException("Appointment time intersects with existed!");
                     }
                 }
             });
@@ -156,8 +139,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    private User getUserByRoleFromAppointment(
-            Appointment appointment, UserRole role) {
+    private User getUserByRoleFromAppointment(Appointment appointment, UserRole role) {
         User savedUser = null;
         for (User user : appointment.getUsers()) {
             if (user.getRole().equals(role)) {
@@ -168,24 +150,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         return savedUser;
     }
 
-    private void sendAppointmentActionsMessages(
-            User student, User teacher, Appointment appointment
-    ) {
-        UuidUserInfo reservationUuid =
-                uuidUserInfoService.create(student.getId());
+    private void sendAppointmentActionsMessages(User student, User teacher, Appointment appointment) {
+        UuidUserInfo reservationUuid = uuidUserInfoService.create(student.getId());
         UuidUserInfo approveUuid = uuidUserInfoService.create(teacher.getId());
         UuidUserInfo declineUuid = uuidUserInfoService.create(teacher.getId());
 
-        String studentMessage = getStudentMessage(reservationUuid.getUuid(),
-                appointment.getId());
+        String studentMessage = getStudentMessage(reservationUuid.getUuid(), appointment.getId());
 
-        String teacherMessage = getTeacherMessage(approveUuid.getUuid(),
-                declineUuid.getUuid(), student, appointment);
+        String teacherMessage = getTeacherMessage(approveUuid.getUuid(), declineUuid.getUuid(), student, appointment);
 
-        mailSenderService.sendMessage(student.getEmail(), "Reservation "
-                + "actions", studentMessage);
-        mailSenderService.sendMessage(teacher.getEmail(), "Appointment "
-                + "actions", teacherMessage);
+        mailSenderService.sendMessage(student.getEmail(), "Reservation " + "actions", studentMessage);
+        mailSenderService.sendMessage(teacher.getEmail(), "Appointment " + "actions", teacherMessage);
     }
 
     private String getStudentMessage(String uuid, Long appointmentId) {
@@ -193,32 +168,36 @@ public class AppointmentServiceImpl implements AppointmentService {
                 "You have just reserved an appointment, to cancel reservation"
                         + "visit this link:" + System.lineSeparator()
                         + "http://localhost:8080/api/v1/appointments-api/"
-                        + "appointments/cancel-reservation/code/%s/%s", uuid,
-                appointmentId);
+                        + "appointments/cancel-reservation/code/%s/%s", uuid, appointmentId
+        );
     }
 
-    private String getTeacherMessage(
-            String approveUuid, String declineUuid, User student,
-            Appointment appointment
-    ) {
-        SimpleDateFormat dayMonthFormat =
-                new SimpleDateFormat("dd.MM");
+    private String getTeacherMessage(String approveUuid, String declineUuid, User student, Appointment appointment) {
+        SimpleDateFormat dayMonthFormat = new SimpleDateFormat("dd.MM");
         SimpleDateFormat hoursFormat = new SimpleDateFormat("HH:mm");
-        String appointmentDay =
-                dayMonthFormat.format(appointment.getStartTime());
+        String appointmentDay = dayMonthFormat.format(appointment.getStartTime());
         String appointmentStart = hoursFormat.format(appointment.getStartTime());
         String appointmentEnd = hoursFormat.format(appointment.getEndTime());
-        return String.format("Student %s %s, has just created appointment "
-                        + "with you %s at %s - %s. To approve meeting visit "
-                        + "this link:" + System.lineSeparator()
-                        + "http://localhost:8080/api/v1/appointments-api/"
-                        + "appointments/confirmation/code/%s/%s"
-                        + System.lineSeparator()
-                        + "To decline visit this:" + System.lineSeparator()
-                        + "http://localhost:8080/api/v1/appointments-api/"
-                        + "appointments/revocation/code/%s/%s",
-                student.getFirstName(), student.getLastName(), appointmentDay,
-                appointmentStart, appointmentEnd, approveUuid,
-                appointment.getId(), declineUuid, appointment.getId());
+        String teacherMessage = "Student %s %s, has just created appointment "
+            + "with you %s at %s - %s. To approve meeting visit "
+            + "this link:" + System.lineSeparator()
+            + "http://localhost:8080/api/v1/appointments-api/"
+            + "appointments/confirmation/code/%s/%s"
+            + System.lineSeparator()
+            + "To decline visit this:" + System.lineSeparator()
+            + "http://localhost:8080/api/v1/appointments-api/"
+            + "appointments/revocation/code/%s/%s";
+        return String.format(
+            teacherMessage,
+            student.getFirstName(),
+            student.getLastName(),
+            appointmentDay,
+            appointmentStart,
+            appointmentEnd,
+            approveUuid,
+            appointment.getId(),
+            declineUuid,
+            appointment.getId()
+        );
     }
 }
