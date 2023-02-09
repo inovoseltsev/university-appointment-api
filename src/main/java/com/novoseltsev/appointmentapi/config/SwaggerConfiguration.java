@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -27,20 +28,20 @@ public class SwaggerConfiguration {
             .securityContexts(Collections.singletonList(securityContext()))
             .securitySchemes(Collections.singletonList(apiKey()))
             .select()
-            .apis(RequestHandlerSelectors.any())
+            .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
             .paths(PathSelectors.any())
             .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-            "My REST API",
-            "Some custom description of API.",
+            "Teacher-Student Appointment API",
+            "API to create custom payable meeting between teacher and student",
             "1.0",
-            "Terms of service",
-            new Contact("Sallo Szrajbman", "www.baeldung.com", "salloszraj@gmail.com"),
-            "License of API",
-            "API license URL",
+            "",
+            new Contact("Illia Novoseltsev", "https://github.com/inovoseltsev", "inovoseltsevdev@gmail.com"),
+            "",
+            "",
             Collections.emptyList());
     }
 

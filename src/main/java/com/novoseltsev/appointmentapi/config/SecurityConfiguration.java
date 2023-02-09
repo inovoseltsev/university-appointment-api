@@ -1,5 +1,6 @@
 package com.novoseltsev.appointmentapi.config;
 
+import com.novoseltsev.appointmentapi.domain.role.UserRole;
 import com.novoseltsev.appointmentapi.security.jwt.JwtConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,18 +37,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         "/users/activation/**",
         "/appointments/cancel-reservation/code/**",
         "/appointments/confirmation/code/**",
-        "/appointments/revocation/code/**"
-    };
-    // TODO keep like it is or rename it
-    private static final String[] SWAGGER_ENDPOINTS = new String[]{
+        "/appointments/revocation/code/**",
+
         "/v2/api-docs",
+        "/v3/api-docs",
+        "/swagger-ui/**",
         "/configuration/ui",
         "/swagger-resources/**",
         "/configuration/security",
         "/swagger-ui.html",
         "/webjars/**",
-        "/swagger-ui/**",
-        "/v3/api-docs",
     };
 
     @Override
@@ -62,10 +61,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers(SWAGGER_ENDPOINTS).permitAll()
             .antMatchers(OPEN_ENDPOINTS).permitAll()
-            .antMatchers(TEACHER_ENDPOINTS).hasAuthority("TEACHER")
-            .antMatchers(STUDENT_ENDPOINTS).hasAuthority("STUDENT")
+            .antMatchers(TEACHER_ENDPOINTS).hasAuthority(UserRole.TEACHER.name())
+            .antMatchers(STUDENT_ENDPOINTS).hasAuthority(UserRole.STUDENT.name())
             .anyRequest().authenticated()
             .and()
             .apply(jwtConfigurer);

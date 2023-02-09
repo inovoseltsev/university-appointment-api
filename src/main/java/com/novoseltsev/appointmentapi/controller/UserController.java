@@ -1,5 +1,6 @@
 package com.novoseltsev.appointmentapi.controller;
 
+import com.novoseltsev.appointmentapi.controller.api.UserApi;
 import com.novoseltsev.appointmentapi.domain.dto.RegistrationUserDto;
 import com.novoseltsev.appointmentapi.domain.dto.UserDto;
 import com.novoseltsev.appointmentapi.domain.dto.UserPasswordDto;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("users")
-public class UserController {
+public class UserController implements UserApi {
 
     @Autowired
     private UserService userService;
@@ -62,8 +63,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void markAsDeleted(@PathVariable Long id) {
-        userService.markAsDeleted(id);
+    public void setDeleted(@PathVariable Long id) {
+        userService.setDeleted(id);
     }
 
     @DeleteMapping("/deletion/{id}")

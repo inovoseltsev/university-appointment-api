@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User create(User user) {
+        //TODO update mapping tables
         checkLoginAndEmailUniqueness(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.NOT_ACTIVE);
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void markAsDeleted(Long id) {
+    public void setDeleted(Long id) {
         User user = findById(id);
         user.setStatus(UserStatus.DELETED);
         userRepository.save(user);
