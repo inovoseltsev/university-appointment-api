@@ -17,8 +17,8 @@ public interface AuthenticationApi {
     @RequestBody(
         required = true,
         content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = AuthenticationDto.class)
+            schema = @Schema(implementation = AuthenticationDto.class),
+            mediaType = MediaType.APPLICATION_JSON_VALUE
         )
     )
     @ApiResponse(
@@ -26,8 +26,9 @@ public interface AuthenticationApi {
         description = "Json Web Token (JWT)",
         content = {
             @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = Map.class))
+                schema = @Schema(implementation = Map.class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE
+            )
         })
     Map<Object, Object> login(AuthenticationDto authDto);
 }
