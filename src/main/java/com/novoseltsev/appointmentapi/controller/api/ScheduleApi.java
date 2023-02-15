@@ -16,7 +16,6 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "schedule", description = "Teacher's schedule API")
 public interface ScheduleApi {
@@ -46,15 +45,6 @@ public interface ScheduleApi {
     List<ScheduleDayDto> getTeacherSchedule(@Parameter(description = "Teacher id", required = true) Long teacherId);
 
     @Operation(summary = "Create schedule day for teacher", tags = "schedule")
-    @ApiResponse(
-        responseCode = "201",
-        description = "Created schedule day",
-        content = {
-            @Content(
-                array = @ArraySchema(schema = @Schema(implementation = UserDto.class)),
-                mediaType = MediaType.APPLICATION_JSON_VALUE
-            )
-        })
     @RequestBody(
         description = "Schedule day",
         required = true,
@@ -63,29 +53,78 @@ public interface ScheduleApi {
             mediaType = MediaType.APPLICATION_JSON_VALUE
         )
     )
-    ResponseEntity<ScheduleDayDto> createDay(
-        ScheduleDayDto dayDto,
-        @Parameter(description = "Teacher id", required = true) Long teacherId
-    );
-
-    @Operation(summary = "Create schedule days for teacher", tags = "schedule")
-    @ApiResponse(responseCode = "201", description = "Days are successfully created", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    ResponseEntity<HttpStatus> createDays(
-        @Parameter(description = "Teacher id", required = true) Long teacherId,
-        @RequestBody(
-            required = true,
-            content = @Content(
-                array = @ArraySchema(schema = @Schema(implementation = ScheduleDayDto.class)),
+    @ApiResponse(
+        responseCode = "201",
+        description = "Day is successfully created",
+        content = {
+            @Content(
+                array = @ArraySchema(schema = @Schema(implementation = UserDto.class)),
                 mediaType = MediaType.APPLICATION_JSON_VALUE
             )
-        ) List<ScheduleDayDto> daysDto
-    );
+        })
+    ResponseEntity<ScheduleDayDto> createDay(ScheduleDayDto dayDto,
+                                             @Parameter(description = "Teacher id", required = true) Long teacherId);
 
+    @Operation(summary = "Create many schedule days for teacher", tags = "schedule")
+    @RequestBody(
+        description = "Schedule days with time when teacher is available",
+        required = true,
+        content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = ScheduleDayDto.class)),
+            mediaType = MediaType.APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(responseCode = "201", description = "Days are successfully created")
+    ResponseEntity<HttpStatus> createDays(@Parameter(description = "Teacher id", required = true) Long teacherId,
+                                          List<ScheduleDayDto> daysDto);
+
+    @Operation(summary = "Update schedule day time for teacher", tags = "schedule")
+    @RequestBody(
+        description = "Schedule days with updated time when teacher is available",
+        required = true,
+        content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = ScheduleDayDto.class)),
+            mediaType = MediaType.APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(
+        description = "Day is successfully updated",
+        responseCode = "200",
+        content = {
+            @Content(
+                schema = @Schema(implementation = ScheduleDayDto.class),
+                mediaType = MediaType.APPLICATION_JSON_VALUE
+            )
+        }
+    )
     ScheduleDayDto updateDay(@Valid ScheduleDayDto dayDto);
 
-    void updateTeacherDays(Queue<@Valid ScheduleDayDto> daysDto, @PathVariable Long teacherId);
+    @Operation(summary = "Update many schedule days for teacher", tags = "schedule")
+    @RequestBody(
+        description = "Schedule days with updated time when teacher is available",
+        required = true,
+        content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = ScheduleDayDto.class)),
+            mediaType = MediaType.APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(responseCode = "200", description = "Days are successfully updated")
+    void updateTeacherDays(Queue<ScheduleDayDto> daysDto,
+                           @Parameter(description = "Teacher id", required = true) Long teacherId);
 
-    void deleteDay(@PathVariable Long id);
+    @Operation(summary = "Delete schedule day for teacher", tags = "schedule")
+    @ApiResponse(responseCode = "200", description = "Day is successfully deleted")
+    void deleteDay(@Parameter(description = "Schedule day id", required = true) Long id);
 
+    @Operation(summary = "Delete many schedule days for teacher", tags = "schedule")
+    @RequestBody(
+        description = "Schedule days ids",
+        required = true,
+        content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = Long.class)),
+            mediaType = MediaType.APPLICATION_JSON_VALUE
+        )
+    )
+    @ApiResponse(responseCode = "200", description = "Days are successfully deleted")
     void deleteDays(List<Long> dayIdList);
 }

@@ -2,6 +2,7 @@ package com.novoseltsev.appointmentapi.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.novoseltsev.appointmentapi.domain.entity.ScheduleDay;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -17,12 +18,15 @@ public class ScheduleDayDto {
 
     @Positive
     @NotNull
-    Long id;
+    @Schema(example = "123", required = true)
+    private Long id;
 
     @NotBlank
+    @Schema(example = "23-01-2023 12:30", required = true, format = "dd-MM-yyyy HH:mm")
     private String openTimeStart;
 
     @NotBlank
+    @Schema(example = "23-01-2023 13:30", required = true, format = "dd-MM-yyyy HH:mm")
     private String openTimeEnd;
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy k:mm");

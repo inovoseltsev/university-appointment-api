@@ -29,11 +29,13 @@ public class UserController implements UserApi {
     @Autowired
     private UserService userService;
 
+    @Override
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {
         return UserDto.fromUser(userService.findById(id));
     }
 
+    @Override
     @GetMapping
     public List<UserDto> getUsers() {
         return userService.findAll().stream()
@@ -41,32 +43,38 @@ public class UserController implements UserApi {
             .collect(Collectors.toList());
     }
 
+    @Override
     @GetMapping("/activation/{activationCode}")
     public void activateUser(@PathVariable String activationCode) {
         userService.activateUserByActivationCode(activationCode);
     }
 
+    @Override
     @PostMapping("/registration")
     public ResponseEntity<UserDto> create(@Valid @RequestBody UserRegistrationDto registrationDto) {
         User user = userService.create(registrationDto.toUser());
         return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.CREATED);
     }
 
+    @Override
     @PutMapping
     public UserDto update(@Valid @RequestBody UserDto userDto) {
         return UserDto.fromUser(userService.update(userDto.toUser()));
     }
 
+    @Override
     @PutMapping("/password/{id}")
     public void updatePassword(@Valid @RequestBody UserPasswordDto passwordDto, @PathVariable Long id) {
         userService.updatePassword(id, passwordDto.getOldPassword(), passwordDto.getNewPassword());
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public void setDeleted(@PathVariable Long id) {
         userService.setDeleted(id);
     }
 
+    @Override
     @DeleteMapping("/deletion/{id}")
     public void deleteById(@PathVariable Long id) {
         userService.deleteById(id);

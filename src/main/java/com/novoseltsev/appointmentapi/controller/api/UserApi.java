@@ -28,9 +28,7 @@ public interface UserApi {
                 mediaType = MediaType.APPLICATION_JSON_VALUE
             )
         })
-    UserDto getUserById(
-        @Parameter(description = "Id of user which will be returned", required = true) Long id
-    );
+    UserDto getUserById(@Parameter(description = "Id of user which will be returned", required = true) Long id);
 
     @Operation(summary = "Get all app users", tags = "user")
     @ApiResponse(
@@ -45,9 +43,7 @@ public interface UserApi {
     List<UserDto> getUsers();
 
     @Operation(summary = "Activate user account to successfully log in", tags = "user")
-    void activateUser(
-        @Parameter(description = "Unique activation code that user receives by email", required = true) String activationCode
-    );
+    void activateUser(@Parameter(description = "Unique activation code that user receives by email", required = true) String activationCode);
 
     @Operation(summary = "User registration", tags = "user")
     @RequestBody(

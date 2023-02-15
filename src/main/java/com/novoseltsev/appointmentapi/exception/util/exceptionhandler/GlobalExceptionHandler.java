@@ -23,43 +23,36 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private Map<String, String> errors;
 
     @ExceptionHandler(ConstraintViolationException.class)
-    private ResponseEntity<Object> handleValidationException(
-            ConstraintViolationException e
-    ) {
+    private ResponseEntity<Object> handleValidationException(ConstraintViolationException e) {
         errors = new HashMap<>();
-        Set<ConstraintViolation<?>> constraintViolations =
-                e.getConstraintViolations();
-        constraintViolations.forEach(constraintViolation -> errors.put("error",
-                constraintViolation.getMessage() + " " + constraintViolation
-                        .getPropertyPath() + " but was " + constraintViolation
-                        .getInvalidValue()));
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        constraintViolations.forEach(constraintViolation -> {
+            String errorMessage = constraintViolation.getMessage()
+                + " " + constraintViolation.getPropertyPath()
+                + " but was " + constraintViolation.getInvalidValue();
+            errors.put("error", errorMessage);
+        });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request
-    ) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers,
+                                                                  HttpStatus status,
+                                                                  WebRequest request) {
         errors = ExceptionUtil.handleValidationErrors(ex);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RegistrationUserException.class)
-    private ResponseEntity<Object> handleRegistrationUserException(
-            RegistrationUserException e
-    ) {
+    private ResponseEntity<Object> handleRegistrationUserException(RegistrationUserException e) {
         errors = new HashMap<>();
         errors.put("error", "Bad user " + e.getMessage() + " in registration");
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(DateTimeParseException.class)
-    private ResponseEntity<Object> handleDateTimeParseException(
-            DateTimeParseException e
-    ) {
+    private ResponseEntity<Object> handleDateTimeParseException(DateTimeParseException e) {
         errors = new HashMap<>();
         errors.put("error", e.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
