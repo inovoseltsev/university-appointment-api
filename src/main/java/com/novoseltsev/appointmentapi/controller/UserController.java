@@ -1,9 +1,9 @@
 package com.novoseltsev.appointmentapi.controller;
 
 import com.novoseltsev.appointmentapi.controller.api.UserApi;
-import com.novoseltsev.appointmentapi.domain.dto.RegistrationUserDto;
 import com.novoseltsev.appointmentapi.domain.dto.UserDto;
 import com.novoseltsev.appointmentapi.domain.dto.UserPasswordDto;
+import com.novoseltsev.appointmentapi.domain.dto.UserRegistrationDto;
 import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.service.UserService;
 import java.util.List;
@@ -47,7 +47,7 @@ public class UserController implements UserApi {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<UserDto> create(@Valid @RequestBody RegistrationUserDto registrationDto) {
+    public ResponseEntity<UserDto> create(@Valid @RequestBody UserRegistrationDto registrationDto) {
         User user = userService.create(registrationDto.toUser());
         return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.CREATED);
     }

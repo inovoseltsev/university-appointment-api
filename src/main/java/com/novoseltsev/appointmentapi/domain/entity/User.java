@@ -15,15 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.EMAIL_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.FIRST_NAME_ERROR;
 import static com.novoseltsev.appointmentapi.validation.message.ValidationMessageUtil.LAST_NAME_ERROR;
@@ -57,7 +54,7 @@ public class User extends AbstractEntity {
 
     @Column(nullable = false, unique = true)
     @NotBlank(message = EMAIL_ERROR)
-    @Email(regexp = EMAIL_PATTERN, message = EMAIL_ERROR)
+    @Pattern(regexp = EMAIL_PATTERN, message = EMAIL_ERROR)
     private String email;
 
     @Column(nullable = false)

@@ -1,9 +1,8 @@
 package com.novoseltsev.appointmentapi.controller.api;
 
-import com.novoseltsev.appointmentapi.domain.dto.AuthenticationDto;
-import com.novoseltsev.appointmentapi.domain.dto.RegistrationUserDto;
 import com.novoseltsev.appointmentapi.domain.dto.UserDto;
 import com.novoseltsev.appointmentapi.domain.dto.UserPasswordDto;
+import com.novoseltsev.appointmentapi.domain.dto.UserRegistrationDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -52,9 +51,10 @@ public interface UserApi {
 
     @Operation(summary = "User registration", tags = "user")
     @RequestBody(
+        description = "User registration info",
         required = true,
         content = @Content(
-            schema = @Schema(implementation = AuthenticationDto.class),
+            schema = @Schema(implementation = UserRegistrationDto.class),
             mediaType = MediaType.APPLICATION_JSON_VALUE
         )
     )
@@ -67,10 +67,11 @@ public interface UserApi {
                 mediaType = MediaType.APPLICATION_JSON_VALUE
             )
         })
-    ResponseEntity<UserDto> create(RegistrationUserDto registrationDto);
+    ResponseEntity<UserDto> create(UserRegistrationDto registrationDto);
 
     @Operation(summary = "Update user information", tags = "user")
     @RequestBody(
+        description = "Updated user",
         required = true,
         content = @Content(
             schema = @Schema(implementation = UserDto.class),
@@ -90,6 +91,7 @@ public interface UserApi {
 
     @Operation(summary = "Update user password", tags = "user")
     @RequestBody(
+        description = "Old password to compare and new password to update",
         required = true,
         content = @Content(
             schema = @Schema(implementation = UserPasswordDto.class),
