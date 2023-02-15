@@ -39,13 +39,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         "/appointments/confirmation/code/**",
         "/appointments/revocation/code/**",
 
-        "/v2/api-docs",
-        "/v3/api-docs",
+        "/v3/api-docs/**",
         "/swagger-ui/**",
-        "/configuration/ui",
-        "/swagger-resources/**",
-        "/configuration/security",
         "/swagger-ui.html",
+        "/swagger-resources/**",
         "/webjars/**",
     };
 

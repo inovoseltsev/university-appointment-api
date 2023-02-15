@@ -1,6 +1,7 @@
 package com.novoseltsev.appointmentapi.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import lombok.Data;
@@ -14,9 +15,11 @@ public class AuthenticationDto {
 
     @NotBlank(message = LOGIN_OR_PASSWORD_ERROR)
     @Pattern(regexp = LOGIN_PATTERN, message = LOGIN_OR_PASSWORD_ERROR)
+    @Schema(example = "login")
     private String login;
 
     @NotBlank(message = LOGIN_OR_PASSWORD_ERROR)
     @Pattern(regexp = PASSWORD_PATTERN, message = LOGIN_OR_PASSWORD_ERROR)
+    @Schema(example = "password")
     private String password;
 }
