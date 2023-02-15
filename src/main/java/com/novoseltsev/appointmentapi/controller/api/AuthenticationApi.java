@@ -10,16 +10,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Map;
 import org.springframework.http.MediaType;
 
-@Tag(name = "authentication", description = "api to get JWT and authorize in app")
+@Tag(name = "authentication", description = "Api to get JWT and authorize in app")
 public interface AuthenticationApi {
 
-    @Operation(summary = "send login and password and return JWT", tags = "authentication")
+    @Operation(summary = "Send login and password and return JWT", tags = "authentication")
     @RequestBody(
         required = true,
         content = @Content(
             schema = @Schema(implementation = AuthenticationDto.class),
             mediaType = MediaType.APPLICATION_JSON_VALUE
-        )
+        ),
+        description = "User's login and password"
     )
     @ApiResponse(
         responseCode = "200",

@@ -16,10 +16,10 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "users", description = "api to interact with teachers and students")
+@Tag(name = "user", description = "User API")
 public interface UserApi {
 
-    @Operation(summary = "get user by id", tags = "users")
+    @Operation(summary = "Get user by id", tags = "user")
     @ApiResponse(
         responseCode = "200",
         description = "User",
@@ -33,7 +33,7 @@ public interface UserApi {
         @Parameter(description = "Id of user which will be returned", required = true) Long id
     );
 
-    @Operation(summary = "get all app users", tags = "users")
+    @Operation(summary = "Get all app users", tags = "user")
     @ApiResponse(
         responseCode = "200",
         description = "List of all application users",
@@ -45,12 +45,12 @@ public interface UserApi {
         })
     List<UserDto> getUsers();
 
-    @Operation(summary = "activate user account to successfully log in", tags = "users")
+    @Operation(summary = "Activate user account to successfully log in", tags = "user")
     void activateUser(
         @Parameter(description = "Unique activation code that user receives by email", required = true) String activationCode
     );
 
-    @Operation(summary = "user registration", tags = "users")
+    @Operation(summary = "User registration", tags = "user")
     @RequestBody(
         required = true,
         content = @Content(
@@ -69,7 +69,7 @@ public interface UserApi {
         })
     ResponseEntity<UserDto> create(RegistrationUserDto registrationDto);
 
-    @Operation(summary = "update user information", tags = "users")
+    @Operation(summary = "Update user information", tags = "user")
     @RequestBody(
         required = true,
         content = @Content(
@@ -79,7 +79,7 @@ public interface UserApi {
     )
     @ApiResponse(
         responseCode = "200",
-        description = "updated user",
+        description = "Updated user",
         content = {
             @Content(
                 schema = @Schema(implementation = UserDto.class),
@@ -88,7 +88,7 @@ public interface UserApi {
         })
     UserDto update(UserDto userDto);
 
-    @Operation(summary = "update user password", tags = "users")
+    @Operation(summary = "Update user password", tags = "user")
     @RequestBody(
         required = true,
         content = @Content(
@@ -98,9 +98,9 @@ public interface UserApi {
     )
     void updatePassword(UserPasswordDto passwordDto, @Parameter(description = "User id", required = true) Long id);
 
-    @Operation(summary = "set user status as deleted", tags = "users")
+    @Operation(summary = "Set user status as deleted", tags = "user")
     void setDeleted(@Parameter(description = "User id", required = true) Long id);
 
-    @Operation(summary = "delete user by id", tags = "users")
+    @Operation(summary = "Delete user by id", tags = "user")
     void deleteById(@Parameter(description = "User id", required = true) Long id);
 }
