@@ -18,7 +18,8 @@ public class OpenApiConfiguration {
     public static final String AUTHORIZATION_NAME = "JWT Authorization";
 
     @Bean
-    public OpenAPI openAPI(@Value("${server.base.url}") String serverUrl,
+    public OpenAPI openAPI(@Value("${server.base.url}") String serverBaseUrl,
+                           @Value("${server.servlet.context-path}") String serverContextPath,
                            @Value("${default.auth.username}") String username,
                            @Value("${default.auth.password}") String password) {
         return new OpenAPI()
@@ -27,14 +28,14 @@ public class OpenApiConfiguration {
                 .description("API to create custom payable meetings between teacher and student")
                 .version("1.0")
             )
-            .servers(Collections.singletonList(new Server().url(serverUrl)))
+            .servers(Collections.singletonList(new Server().url(serverBaseUrl + serverContextPath)))
             .addSecurityItem(new SecurityRequirement().addList(AUTHORIZATION_NAME))
             .components(new Components()
                 .addSecuritySchemes(AUTHORIZATION_NAME, new SecurityScheme()
                     .name(AUTHORIZATION_HEADER)
                     .type(SecurityScheme.Type.APIKEY)
                     .scheme("bearer_")
-                    .description("Provide the JWT token. JWT token can be obtained from the Login API. "
+                    .description("Provide the JWT token. JWT token can be obtained from the Authentication API. "
                         + "For testing, use the credentials <strong>" + username + "/" + password + "</strong>")
                     .bearerFormat("JWT")
                     .in(SecurityScheme.In.HEADER)));
