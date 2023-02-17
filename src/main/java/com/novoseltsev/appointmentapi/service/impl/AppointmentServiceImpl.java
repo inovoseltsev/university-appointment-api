@@ -21,8 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import static com.novoseltsev.appointmentapi.exception.util.ExceptionUtil.checkAppointmentUsersForRoleMatching;
 
 @Component
@@ -156,9 +154,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void sendAppointmentActionsMessages(User student, User teacher, Appointment appointment) {
-        UuidUserInfo reservationUuid = uuidUserInfoService.create(student.getId());
-        UuidUserInfo approveUuid = uuidUserInfoService.create(teacher.getId());
-        UuidUserInfo declineUuid = uuidUserInfoService.create(teacher.getId());
+        UuidUserInfo reservationUuid = uuidUserInfoService.create(student);
+        UuidUserInfo approveUuid = uuidUserInfoService.create(teacher);
+        UuidUserInfo declineUuid = uuidUserInfoService.create(teacher);
 
         String studentMessage = getStudentMessage(reservationUuid.getUuid(), appointment.getId());
 

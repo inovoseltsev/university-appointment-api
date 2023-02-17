@@ -38,15 +38,18 @@ public class UserServiceImpl implements UserService {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
+    @Value("${default.activation.uuid}")
+    private String defaultActivationUUID;
+
     @Override
     @Transactional
     public User create(User user) {
-        //TODO update mapping tables
         checkLoginAndEmailUniqueness(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.NOT_ACTIVE);
         User savedUser = userRepository.save(user);
-        sendActivationMessageToUser(user);
+        UuidUserInfo uuidUserInfo = uuidUserInfoService.create(savedUser);
+        sendActivationMessageToUser(user, uuidUserInfo.getUuid());
         return savedUser;
     }
 
@@ -109,10 +112,10 @@ public class UserServiceImpl implements UserService {
     public void activateUserByActivationCode(String uuid) {
         UuidUserInfo uuidUserInfo = uuidUserInfoService.findByUuid(uuid);
         if (uuidUserInfo != null) {
-            User user = findById(uuidUserInfo.getUserId());
+            User user = findById(uuidUserInfo.getUser().getId());
             user.setStatus(UserStatus.ACTIVE);
+            user.getUuidUsers().remove(uuidUserInfo);
             userRepository.save(user);
-            uuidUserInfoService.delete(uuidUserInfo);
         }
     }
 
@@ -135,15 +138,14 @@ public class UserServiceImpl implements UserService {
         });
     }
 
-    private void sendActivationMessageToUser(User user) {
-        UuidUserInfo uuidUserInfo = uuidUserInfoService.create(user.getId());
+    private void sendActivationMessageToUser(User user, String uuid) {
         String message = String.format(
             "Hello %s %s!" + System.lineSeparator() + "Please activate your "
                 + "account by visiting this link: " + System.lineSeparator()
                 + serverBaseUrl + contextPath + "/users/activation/%s",
             user.getFirstName(),
             user.getLastName(),
-            uuidUserInfo.getUuid()
+            uuid
         );
         mailSenderService.sendMessage(user.getEmail(), "Account activation", message);
     }
