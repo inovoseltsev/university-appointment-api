@@ -13,7 +13,7 @@ public interface UserService {
 
     void updatePassword(Long userId, String oldPassword, String newPassword);
 
-    void markAsDeleted(Long id);
+    void setDeleted(Long id);
 
     void deleteById(Long id);
 

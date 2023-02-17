@@ -1,6 +1,6 @@
 package com.novoseltsev.appointmentapi.domain.role;
 
-public enum  UserRole {
+public enum UserRole {
     TEACHER,
     STUDENT
 }

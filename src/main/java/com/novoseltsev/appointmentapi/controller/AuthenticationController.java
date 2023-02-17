@@ -1,5 +1,6 @@
 package com.novoseltsev.appointmentapi.controller;
 
+import com.novoseltsev.appointmentapi.controller.api.AuthenticationApi;
 import com.novoseltsev.appointmentapi.domain.dto.AuthenticationDto;
 import com.novoseltsev.appointmentapi.exception.auth.JwtAuthenticationException;
 import com.novoseltsev.appointmentapi.exception.user.UserNotFoundException;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("auth")
-public class AuthenticationController {
+public class AuthenticationController implements AuthenticationApi {
 
     @Autowired
     private AuthenticationService authenticationService;

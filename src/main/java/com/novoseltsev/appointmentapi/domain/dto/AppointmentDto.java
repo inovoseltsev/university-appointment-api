@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.novoseltsev.appointmentapi.domain.entity.Appointment;
 import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.domain.role.UserRole;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -21,27 +22,30 @@ public class AppointmentDto {
 
     @Positive
     @NotNull
+    @Schema(example = "123", required = true)
     Long id;
 
     @NotBlank
+    @Schema(example = "23-01-2023 12:30", required = true, format = "dd-MM-yyyy HH:mm")
     private String startDate;
 
     @NotBlank
+    @Schema(example = "23-01-2023 13:30", required = true, format = "dd-MM-yyyy HH:mm")
     private String endDate;
 
     @Positive
     @NotNull
+    @Schema(example = "123", required = true)
     private Long studentId;
 
     @Positive
     @NotNull
+    @Schema(example = "123", required = true)
     private Long teacherId;
 
-    private static final SimpleDateFormat DATE_FORMAT =
-            new SimpleDateFormat("dd-MM-yyyy k:mm");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy k:mm");
 
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
     public Appointment toAppointment() {
         Appointment appointment = new Appointment();

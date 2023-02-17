@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User create(User user) {
+        //TODO update mapping tables
         checkLoginAndEmailUniqueness(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(UserStatus.NOT_ACTIVE);
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void markAsDeleted(Long id) {
+    public void setDeleted(Long id) {
         User user = findById(id);
         user.setStatus(UserStatus.DELETED);
         userRepository.save(user);
@@ -137,7 +138,7 @@ public class UserServiceImpl implements UserService {
     private void sendActivationMessageToUser(User user) {
         UuidUserInfo uuidUserInfo = uuidUserInfoService.create(user.getId());
         String message = String.format(
-            "Hello %s %s!" + System.lineSeparator() + "Please activate your"
+            "Hello %s %s!" + System.lineSeparator() + "Please activate your "
                 + "account by visiting this link: " + System.lineSeparator()
                 + serverBaseUrl + contextPath + "/users/activation/%s",
             user.getFirstName(),
