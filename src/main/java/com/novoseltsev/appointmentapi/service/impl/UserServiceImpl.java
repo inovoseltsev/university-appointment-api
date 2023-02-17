@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
     private void sendActivationMessageToUser(User user) {
         UuidUserInfo uuidUserInfo = uuidUserInfoService.create(user.getId());
         String message = String.format(
-            "Hello %s %s!" + System.lineSeparator() + "Please activate your"
+            "Hello %s %s!" + System.lineSeparator() + "Please activate your "
                 + "account by visiting this link: " + System.lineSeparator()
                 + serverBaseUrl + contextPath + "/users/activation/%s",
             user.getFirstName(),

@@ -33,8 +33,8 @@ public class OpenApiConfiguration {
             .components(new Components()
                 .addSecuritySchemes(AUTHORIZATION_NAME, new SecurityScheme()
                     .name(AUTHORIZATION_HEADER)
-                    .type(SecurityScheme.Type.APIKEY)
-                    .scheme("bearer_")
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("bearer")
                     .description("Provide the JWT token. JWT token can be obtained from the Authentication API. "
                         + "For testing, use the credentials <strong>" + username + "/" + password + "</strong>")
                     .bearerFormat("JWT")
