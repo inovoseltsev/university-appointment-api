@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class UserServiceImpl implements UserService {
 
+    private static final String FAKE_EMAIL_PREFIX = "fake_";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -38,18 +40,17 @@ public class UserServiceImpl implements UserService {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    @Value("${default.activation.uuid}")
-    private String defaultActivationUUID;
-
     @Override
     @Transactional
     public User create(User user) {
         checkLoginAndEmailUniqueness(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setStatus(UserStatus.NOT_ACTIVE);
+        user.setStatus(user.getEmail().startsWith(FAKE_EMAIL_PREFIX) ? UserStatus.ACTIVE : UserStatus.NOT_ACTIVE);
         User savedUser = userRepository.save(user);
-        UuidUserInfo uuidUserInfo = uuidUserInfoService.create(savedUser);
-        sendActivationMessageToUser(user, uuidUserInfo.getUuid());
+        if (!user.getEmail().startsWith(FAKE_EMAIL_PREFIX)) {
+            UuidUserInfo uuidUserInfo = uuidUserInfoService.create(savedUser);
+            sendActivationMessageToUser(user, uuidUserInfo.getUuid());
+        }
         return savedUser;
     }
 

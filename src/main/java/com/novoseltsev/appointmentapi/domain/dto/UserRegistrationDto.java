@@ -40,7 +40,7 @@ public class UserRegistrationDto {
 
     @NotBlank(message = EMAIL_ERROR)
     @Pattern(regexp = EMAIL_PATTERN, message = EMAIL_ERROR)
-    @Schema(example = "illianovoseltsev@illia.com", required = true)
+    @Schema(example = "fake_illianovoseltsev@illia.com", required = true, description = "\"fake_\" prefix is used to register user without email activation")
     private String email;
 
     @NotBlank(message = PASSWORD_ERROR)

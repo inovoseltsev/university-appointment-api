@@ -25,10 +25,10 @@ public class JwtProvider {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER = "Bearer ";
 
-    @Value("${jwt.token.secret}")
+    @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.token.expired.time}")
+    @Value("${jwt.expiration.time}")
     private long tokenMillisecondsValidity;
 
     @Autowired
@@ -80,7 +80,7 @@ public class JwtProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("Jwt token is expired or invalid!");
+            throw new JwtAuthenticationException("Jwt is expired or invalid!");
         }
     }
 }

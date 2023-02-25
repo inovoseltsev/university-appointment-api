@@ -15,7 +15,7 @@ public class AuthenticationDto {
 
     @NotBlank(message = LOGIN_OR_PASSWORD_ERROR)
     @Pattern(regexp = LOGIN_PATTERN, message = LOGIN_OR_PASSWORD_ERROR)
-    @Schema(example = "login")
+    @Schema(example = "mylogin")
     private String login;
 
     @NotBlank(message = LOGIN_OR_PASSWORD_ERROR)
