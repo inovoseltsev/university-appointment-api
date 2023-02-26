@@ -83,7 +83,7 @@ public interface ScheduleApi {
         description = "Schedule days with updated time when teacher is available",
         required = true,
         content = @Content(
-            array = @ArraySchema(schema = @Schema(implementation = ScheduleDayDto.class)),
+            schema = @Schema(implementation = ScheduleDayDto.class),
             mediaType = MediaType.APPLICATION_JSON_VALUE
         )
     )

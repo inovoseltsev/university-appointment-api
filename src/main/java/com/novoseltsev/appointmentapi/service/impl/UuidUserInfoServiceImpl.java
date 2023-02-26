@@ -1,5 +1,6 @@
 package com.novoseltsev.appointmentapi.service.impl;
 
+import com.novoseltsev.appointmentapi.domain.entity.User;
 import com.novoseltsev.appointmentapi.domain.entity.UuidUserInfo;
 import com.novoseltsev.appointmentapi.repository.UuidUserInfoRepository;
 import com.novoseltsev.appointmentapi.service.UuidUserInfoService;
@@ -16,10 +17,10 @@ public class UuidUserInfoServiceImpl implements UuidUserInfoService {
 
     @Override
     @Transactional
-    public UuidUserInfo create(Long userId) {
+    public UuidUserInfo create(User user) {
         UuidUserInfo uuidUserInfo = new UuidUserInfo();
-        uuidUserInfo.setUserId(userId);
         uuidUserInfo.setUuid(String.valueOf(UUID.randomUUID()));
+        uuidUserInfo.setUser(user);
         uuidUserInfoRepository.save(uuidUserInfo);
         return uuidUserInfo;
     }
