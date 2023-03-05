@@ -19,9 +19,7 @@ public class OpenApiConfiguration {
 
     @Bean
     public OpenAPI openAPI(@Value("${server.base.url}") String serverBaseUrl,
-                           @Value("${server.servlet.context-path}") String serverContextPath,
-                           @Value("${default.auth.username}") String username,
-                           @Value("${default.auth.password}") String password) {
+                           @Value("${server.servlet.context-path}") String serverContextPath) {
         return new OpenAPI()
             .info(new Info()
                 .title("University Teacher-Student Appointment API")
@@ -36,7 +34,7 @@ public class OpenApiConfiguration {
                     .type(SecurityScheme.Type.HTTP)
                     .scheme("bearer")
                     .description("Provide the JWT token. JWT token can be obtained from the \"authentication\" API. "
-                        + "For testing, use the credentials <strong>" + username + "/" + password + "</strong>")
+                        + "For testing, you may use default credentials: <strong>teacher/teacher</strong> or <strong>student/student</strong>")
                     .bearerFormat("JWT")
                     .in(SecurityScheme.In.HEADER)));
     }
