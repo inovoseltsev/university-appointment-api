@@ -15,11 +15,11 @@ public class AuthenticationDto {
 
     @NotBlank(message = LOGIN_OR_PASSWORD_ERROR)
     @Pattern(regexp = LOGIN_PATTERN, message = LOGIN_OR_PASSWORD_ERROR)
-    @Schema(example = "mylogin")
+    @Schema(example = "teacher")
     private String login;
 
     @NotBlank(message = LOGIN_OR_PASSWORD_ERROR)
     @Pattern(regexp = PASSWORD_PATTERN, message = LOGIN_OR_PASSWORD_ERROR)
-    @Schema(example = "password")
+    @Schema(example = "teacher")
     private String password;
 }
